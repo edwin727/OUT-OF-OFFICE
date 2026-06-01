@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>spARK Labs — Team Availability</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --pink:#E8297A;--pink-l:#fce8f3;--pink-d:#a81a58;
+  --amber:#F5A623;--amber-l:#fef3e2;--amber-d:#8a5100;
+  --bg:#f5f5f7;--card:#fff;--border:#e5e5ea;
+  --text:#1d1d1f;--sub:#6e6e73;--muted:#aeaeb2;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+/* ── SCREENS ── */
+#loginPage,#appPage{display:none;}
+
+/* ── LOGIN ── */
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,#1e2033,#2d3050);}
+.login-box{background:#fff;border-radius:18px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 24px 64px rgba(0,0,0,.35);}
+.brand{display:flex;align-items:center;gap:0;justify-content:center;margin-bottom:6px;}
+.b-sp{background:var(--pink);color:#fff;padding:4px 7px;border-radius:7px 0 0 7px;font-size:13px;font-weight:700;}
+.b-ark{background:var(--pink);color:#1a1a2e;padding:4px 10px;border-radius:0 7px 7px 0;font-size:19px;font-weight:800;}
+.b-labs{background:var(--amber);color:#1a1a2e;padding:4px 10px;border-radius:7px;font-size:19px;font-weight:800;margin-left:5px;}
+.login-sub{text-align:center;font-size:12px;color:#86868b;margin-bottom:1.75rem;}
+.login-box h2{font-size:18px;font-weight:700;text-align:center;margin-bottom:1.25rem;}
+.field{margin-bottom:13px;}
+.field label{font-size:12px;font-weight:600;color:var(--sub);display:block;margin-bottom:5px;}
+.field input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:border-color .15s;}
+.field input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(232,41,122,.1);}
+.btn-login{width:100%;padding:11px;border:none;border-radius:10px;background:var(--pink);color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity .15s;}
+.btn-login:hover{opacity:.88;}
+.login-err{display:none;font-size:12px;color:#ff3b30;background:#fff2f2;border:1px solid #ffd0d0;border-radius:8px;padding:9px 12px;margin-bottom:12px;}
+.login-hint{margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:center;line-height:1.9;}
+.login-hint strong{color:var(--sub);}
+
+/* ── APP SHELL ── */
+#appPage{min-height:100vh;background:var(--bg);}
+.topnav{height:54px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:sticky;top:0;z-index:50;gap:8px;flex-wrap:wrap;}
+.nav-tabs{display:flex;gap:2px;}
+.nav-tab{padding:6px 13px;border:none;border-radius:8px;background:none;font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.nav-tab:hover{background:var(--bg);}
+.nav-tab.active{background:var(--pink-l);color:var(--pink-d);font-weight:700;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.u-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.u-name{font-size:13px;font-weight:600;}
+.u-role{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
+.role-mgr{background:#fef3e2;color:#8a5100;}
+.role-emp{background:var(--bg);color:var(--sub);}
+.btn-signout{font-size:12px;padding:5px 11px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--sub);cursor:pointer;font-weight:500;}
+.btn-signout:hover{background:var(--bg);}
+
+/* ── PANELS ── */
+.panel{display:none;padding:1.25rem;max-width:1080px;margin:0 auto;}
+.panel.show{display:block;}
+
+/* ── DASHBOARD ── */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.25rem;}
+@media(min-width:480px){.stats-row{grid-template-columns:repeat(4,1fr);}}
+.stat{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.stat-l{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.stat-v{font-size:26px;font-weight:800;color:var(--text);margin-top:2px;}
+.stat-s{font-size:11px;color:var(--muted);margin-top:1px;}
+.two-col{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+@media(min-width:680px){.two-col{grid-template-columns:1fr 280px;}}
+
+/* ── CALENDAR ── */
+.cal-card{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-title{font-size:15px;font-weight:700;}
+.cal-nav-row{display:flex;gap:4px;}
+.cnb{width:28px;height:28px;border:1.5px solid var(--border);border-radius:7px;background:#fff;cursor:pointer;font-size:15px;color:var(--sub);display:flex;align-items:center;justify-content:center;}
+.cnb:hover{background:var(--bg);}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
+.cal-dow span{text-align:center;font-size:10px;font-weight:700;color:var(--muted);padding:3px 0;text-transform:uppercase;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-cell{min-height:56px;padding:4px;border-radius:6px;background:#fafafa;}
+.cal-cell.today{background:#fff0f7;}
+.cal-cell.om .dn{color:#d2d2d7;}
+.dn{font-size:11px;font-weight:700;color:var(--sub);margin-bottom:2px;}
+.cal-cell.today .dn{background:var(--pink);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.ev{font-size:9px;font-weight:600;padding:1px 4px;border-radius:4px;margin-bottom:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.ev-vacation{background:#fce8f3;color:#a81a58;}
+.ev-sick{background:#fef3e2;color:#8a5100;}
+.ev-personal{background:#e8f4ff;color:#0c447c;}
+.ev-conference{background:#f0effe;color:#3c3489;}
+
+/* ── UPCOMING LIST ── */
+.list-card{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.sec-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.fp{font-size:11px;padding:4px 10px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--sub);cursor:pointer;font-weight:500;transition:all .15s;}
+.fp.on{background:var(--pink);color:#fff;border-color:var(--pink);}
+.abs-list{display:flex;flex-direction:column;gap:8px;}
+.abs-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;background:var(--bg);}
+.abs-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
+.abs-info{flex:1;min-width:0;}
+.abs-name{font-size:13px;font-weight:600;}
+.abs-date{font-size:11px;color:var(--sub);margin-top:1px;}
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;}
+.empty{text-align:center;padding:2rem;color:var(--muted);font-size:13px;}
+
+/* ── MY TIME OFF ── */
+.my-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;}
+.pg-title{font-size:20px;font-weight:800;}
+.btn-add{background:var(--pink);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.btn-add:hover{opacity:.88;}
+.notify-bar{display:none;align-items:flex-start;gap:12px;background:var(--pink-l);border:1.5px solid rgba(232,41,122,.25);border-radius:12px;padding:12px 16px;margin-bottom:1rem;}
+.notify-bar.show{display:flex;}
+.nb-text{flex:1;font-size:13px;color:var(--pink-d);line-height:1.5;}
+.nb-link{color:var(--pink);font-weight:700;cursor:pointer;font-size:12px;}
+.nb-close{background:none;border:none;cursor:pointer;color:var(--pink-d);font-size:20px;line-height:1;flex-shrink:0;}
+.entries{display:flex;flex-direction:column;gap:8px;}
+.entry{background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+.e-stripe{width:4px;height:40px;border-radius:3px;flex-shrink:0;}
+.e-info{flex:1;min-width:0;}
+.e-type{font-size:13px;font-weight:700;}
+.e-date{font-size:11px;color:var(--sub);margin-top:2px;}
+.e-acts{display:flex;gap:6px;align-items:center;}
+.btn-notify{background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--sub);cursor:pointer;font-weight:600;}
+.btn-notify:hover{background:var(--bg);}
+.btn-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px;line-height:1;}
+.btn-del:hover{color:#ff3b30;}
+
+/* ── ADMIN ── */
+.admin-tabs{display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:10px;}
+.atab{padding:6px 14px;border:none;border-radius:8px;background:none;font-size:13px;color:var(--sub);cursor:pointer;font-weight:500;}
+.atab.active{background:var(--amber-l);color:var(--amber-d);font-weight:700;}
+.ap{display:none;}.ap.show{display:block;}
+.tbl-wrap{overflow-x:auto;background:#fff;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px;}
+th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid #f5f5f7;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafafa;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;}
+.dot-out{background:#ff3b30;}.dot-in{background:#34c759;}
+.tbl-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:2px 6px;}
+.tbl-del:hover{color:#ff3b30;}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:1.75rem;width:100%;max-width:360px;box-shadow:0 24px 64px rgba(0,0,0,.25);}
+.modal h3{font-size:17px;font-weight:800;margin-bottom:1.25rem;}
+.frow{margin-bottom:14px;}
+.frow label{font-size:12px;font-weight:700;color:var(--sub);display:block;margin-bottom:5px;}
+.frow select,.frow input[type=date]{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:#fff;}
+.frow select:focus,.frow input:focus{border-color:var(--pink);}
+.frow-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--sub);font-weight:500;}
+.frow-check input{accent-color:var(--pink);width:16px;height:16px;}
+.m-acts{display:flex;gap:8px;margin-top:1.5rem;justify-content:flex-end;}
+.btn-cancel{padding:9px 16px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--sub);font-size:13px;font-weight:600;cursor:pointer;}
+.btn-save{padding:9px 18px;border-radius:10px;border:none;background:var(--pink);color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
+.ferr{display:none;font-size:12px;color:#ff3b30;background:#fff2f2;border:1px solid #ffd0d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;}
+
+@media(max-width:480px){
+  .u-name{display:none;}
+  .nav-tab{padding:5px 9px;font-size:12px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-box">
+    <div class="brand"><span class="b-sp">sp</span><span class="b-ark">ARK</span><span class="b-labs">LABS</span></div>
+    <div class="login-sub">by ARK Invest &nbsp;·&nbsp; Team availability</div>
+    <h2>Sign in</h2>
+    <div class="login-err" id="loginErr"></div>
+    <div class="field">
+      <label>Work email</label>
+      <input type="email" id="inEmail" placeholder="you@sp-ark-labs.com" autocomplete="username"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="inPass" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-login" onclick="doLogin()">Sign in &rarr;</button>
+    <div class="login-hint">
+      <strong>Your login is your first name:</strong><br>
+      edwin@sp-ark-labs.com &nbsp;/&nbsp; edwin123<br>
+      cassandra@sp-ark-labs.com &nbsp;/&nbsp; cassandra123<br>
+      caitlin@sp-ark-labs.com &nbsp;/&nbsp; caitlin123<br>
+      becca@sp-ark-labs.com &nbsp;/&nbsp; becca123<br>
+      cassidy@sp-ark-labs.com &nbsp;/&nbsp; cassidy123<br>
+      larry@sp-ark-labs.com &nbsp;/&nbsp; larry123<br>
+      jen@sp-ark-labs.com &nbsp;/&nbsp; jen123<br>
+      ed@sp-ark-labs.com &nbsp;/&nbsp; ed123
+    </div>
+  </div>
+</div>
+
+<!-- APP PAGE -->
+<div id="appPage">
+  <!-- NAV -->
+  <div class="topnav">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div class="brand"><span class="b-sp">sp</span><span class="b-ark">ARK</span><span class="b-labs">LABS</span></div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showPanel('dash',this)">Dashboard</button>
+        <button class="nav-tab" onclick="showPanel('mine',this)">My time off</button>
+        <button class="nav-tab" id="adminTab" style="display:none" onclick="showPanel('admin',this)">Admin</button>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="u-av" id="navAv"></div>
+      <span class="u-name" id="navName"></span>
+      <span class="u-role" id="navRole"></span>
+      <button class="btn-signout" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="panel show" id="panelDash">
+    <div class="stats-row" id="statsRow"></div>
+    <div class="two-col">
+      <div class="cal-card">
+        <div class="cal-top">
+          <div class="cal-title" id="calLabel"></div>
+          <div class="cal-nav-row">
+            <button class="cnb" onclick="calMove(-1)">&#8249;</button>
+            <button class="cnb" onclick="calMove(1)">&#8250;</button>
+          </div>
+        </div>
+        <div class="cal-dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+        <div class="cal-grid" id="calGrid"></div>
+      </div>
+      <div class="list-card">
+        <div class="sec-title">Upcoming time off</div>
+        <div class="filter-row">
+          <button class="fp on" onclick="setFilter('all',this)">All</button>
+          <button class="fp" onclick="setFilter('vacation',this)">Vacation</button>
+          <button class="fp" onclick="setFilter('sick',this)">Sick</button>
+          <button class="fp" onclick="setFilter('personal',this)">Personal</button>
+          <button class="fp" onclick="setFilter('conference',this)">Event</button>
+        </div>
+        <div class="abs-list" id="upcomingList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY TIME OFF -->
+  <div class="panel" id="panelMine">
+    <div class="notify-bar" id="notifyBar">
+      <div class="nb-text">
+        <strong>Notify your team?</strong> <span id="notifyMsg"></span><br>
+        <span class="nb-link" onclick="openNotifyEmail()">&#9993; Open email to team</span>
+      </div>
+      <button class="nb-close" onclick="closeNotify()">&#215;</button>
+    </div>
+    <div class="my-hdr">
+      <div class="pg-title">My time off</div>
+      <button class="btn-add" onclick="openModal()">+ Request time off</button>
+    </div>
+    <div class="sec-title" style="margin-bottom:10px">My requests</div>
+    <div class="entries" id="myEntries"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div class="panel" id="panelAdmin">
+    <div class="pg-title" style="margin-bottom:1rem">Admin</div>
+    <div class="admin-tabs">
+      <button class="atab active" onclick="showAdminTab('team',this)">Team roster</button>
+      <button class="atab" onclick="showAdminTab('requests',this)">All requests</button>
+    </div>
+    <div class="ap show" id="apTeam"></div>
+    <div class="ap" id="apRequests"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>Request time off</h3>
+    <div class="ferr" id="modalErr">Please check your dates.</div>
+    <div class="frow">
+      <label>Type</label>
+      <select id="mType">
+        <option value="vacation">🌴 Vacation</option>
+        <option value="sick">🤒 Sick leave</option>
+        <option value="personal">💙 Personal</option>
+        <option value="conference">🎤 Conference / Event</option>
+      </select>
+    </div>
+    <div class="frow">
+      <label>Start date</label>
+      <input type="date" id="mStart"/>
+    </div>
+    <div class="frow">
+      <label>End date</label>
+      <input type="date" id="mEnd"/>
+    </div>
+    <div class="frow">
+      <label class="frow-check">
+        <input type="checkbox" id="mNotify" checked/> Email the team about this
+      </label>
+    </div>
+    <div class="m-acts">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-save" onclick="saveRequest()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+const TEAM = [
+  {id:'edwin',    name:'Edwin',     email:'edwin@sp-ark-labs.com',    pass:'edwin123',    role:'admin'},
+  {id:'cassandra',name:'Cassandra', email:'cassandra@sp-ark-labs.com',pass:'cassandra123',role:'employee'},
+  {id:'caitlin',  name:'Caitlin',   email:'caitlin@sp-ark-labs.com',  pass:'caitlin123',  role:'employee'},
+  {id:'becca',    name:'Becca',     email:'becca@sp-ark-labs.com',    pass:'becca123',    role:'admin'},
+  {id:'cassidy',  name:'Cassidy',   email:'cassidy@sp-ark-labs.com',  pass:'cassidy123',  role:'employee'},
+  {id:'larry',    name:'Larry',     email:'larry@sp-ark-labs.com',    pass:'larry123',    role:'employee'},
+  {id:'jen',      name:'Jen',       email:'jen@sp-ark-labs.com',      pass:'jen123',      role:'employee'},
+  {id:'ed',       name:'Ed',        email:'ed@sp-ark-labs.com',       pass:'ed123',       role:'employee'},
+];
+
+const TEAM_EMAILS = TEAM.map(t=>t.email).join(',');
+
+const TYPE_CFG = {
+  vacation:   {label:'Vacation',   bg:'#fce8f3',tc:'#a81a58',stripe:'#E8297A', ev:'ev-vacation'},
+  sick:       {label:'Sick leave', bg:'#fef3e2',tc:'#8a5100',stripe:'#F5A623', ev:'ev-sick'},
+  personal:   {label:'Personal',   bg:'#e8f4ff',tc:'#0c447c',stripe:'#378ADD', ev:'ev-personal'},
+  conference: {label:'Conference', bg:'#f0effe',tc:'#3c3489',stripe:'#7F77DD', ev:'ev-conference'},
+};
+
+const AV_COLORS = [
+  ['#fce8f3','#a81a58'],['#fef3e2','#8a5100'],['#e8f4ff','#0c447c'],['#f0effe','#3c3489'],
+  ['#e1f5ee','#085041'],['#fff3e0','#7d4e00'],['#fce4ec','#880e4f'],['#e8f5e9','#1b5e20']
+];
+
+// ─── STATE ──────────────────────────────────────────────
+let currentUser = null;
+let requests    = [];
+let calYear     = new Date().getFullYear();
+let calMonth    = new Date().getMonth();
+let listFilter  = 'all';
+let pendingNotify = null;
+
+const TODAY = new Date();
+TODAY.setHours(0,0,0,0);
+
+// ─── STORAGE ────────────────────────────────────────────
+function saveData() {
+  try { localStorage.setItem('sparklabs_ooo', JSON.stringify(requests)); } catch(e){}
+}
+function loadData() {
+  try { requests = JSON.parse(localStorage.getItem('sparklabs_ooo') || '[]'); } catch(e){ requests=[]; }
+}
+
+// ─── HELPERS ────────────────────────────────────────────
+function toDateStr(d) { return d.toISOString().split('T')[0]; }
+function fromDateStr(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function initials(name) { return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function avColor(idx) { return AV_COLORS[idx % AV_COLORS.length]; }
+function userIndex(id) { return TEAM.findIndex(t=>t.id===id); }
+function formatRange(s, e) {
+  const o = {month:'short', day:'numeric'};
+  return s===e ? fromDateStr(s).toLocaleDateString('en-US',o)
+               : fromDateStr(s).toLocaleDateString('en-US',o)+' – '+fromDateStr(e).toLocaleDateString('en-US',o);
+}
+function dayCount(s, e) {
+  return Math.round((fromDateStr(e)-fromDateStr(s))/86400000)+1;
+}
+
+// ─── AUTH ────────────────────────────────────────────────
+function doLogin() {
+  const email = document.getElementById('inEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('inPass').value.trim();
+  const errEl = document.getElementById('loginErr');
+
+  if (!email || !pass) {
+    errEl.textContent = 'Please enter your email and password.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  const user = TEAM.find(t => t.email === email && t.pass === pass);
+
+  if (!user) {
+    errEl.textContent = 'Email or password incorrect. Try: firstname@sp-ark-labs.com and firstname123';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  currentUser = user;
+  loadData();
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('appPage').style.display = 'block';
+  setupNav();
+  renderDashboard();
+}
+
+function doLogout() {
+  currentUser = null;
+  pendingNotify = null;
+  document.getElementById('appPage').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('inEmail').value = '';
+  document.getElementById('inPass').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+  // reset panels
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.nav-tab').classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('panelDash').classList.add('show');
+}
+
+// ─── NAV SETUP ───────────────────────────────────────────
+function setupNav() {
+  const u = currentUser;
+  const idx = userIndex(u.id);
+  const [bg, tc] = avColor(idx);
+  const av = document.getElementById('navAv');
+  av.textContent = initials(u.name);
+  av.style.background = bg;
+  av.style.color = tc;
+  document.getElementById('navName').textContent = u.name;
+  const roleEl = document.getElementById('navRole');
+  roleEl.textContent = u.role === 'admin' ? 'Admin' : 'Employee';
+  roleEl.className = 'u-role ' + (u.role === 'admin' ? 'role-mgr' : 'role-emp');
+  document.getElementById('adminTab').style.display = u.role === 'admin' ? '' : 'none';
+}
+
+function showPanel(name, btn) {
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
+  document.getElementById('panel'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('show');
+  if (name==='mine') renderMyTime();
+  if (name==='admin') renderAdmin();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────────
+function renderDashboard() {
+  renderStats();
+  renderCalendar();
+  renderUpcoming();
+}
+
+function renderStats() {
+  const todayStr = toDateStr(TODAY);
+  const weekEnd  = toDateStr(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()+7));
+  const outToday = requests.filter(r=>r.start<=todayStr && r.end>=todayStr).length;
+  const outWeek  = requests.filter(r=>r.start<=weekEnd  && r.end>=todayStr).length;
+  const upcoming = requests.filter(r=>r.start>todayStr).length;
+  document.getElementById('statsRow').innerHTML = [
+    {l:'Out today',   v:outToday, s:'team members'},
+    {l:'Out this week',v:outWeek, s:'incl. today'},
+    {l:'Upcoming',    v:upcoming, s:'future requests'},
+    {l:'Team size',   v:TEAM.length, s:'members total'},
+  ].map(x=>`<div class="stat"><div class="stat-l">${x.l}</div><div class="stat-v">${x.v}</div><div class="stat-s">${x.s}</div></div>`).join('');
+}
+
+function renderCalendar() {
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calLabel').textContent = MONTHS[calMonth]+' '+calYear;
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const todayStr = toDateStr(TODAY);
+  const total = Math.ceil((firstDay+daysInMonth)/7)*7;
+  let html = '';
+  let dc = 1;
+  for (let i=0; i<total; i++) {
+    let d, om=false;
+    if (i<firstDay) { d=new Date(calYear,calMonth-1,new Date(calYear,calMonth,0).getDate()-firstDay+i+1); om=true; }
+    else if (dc>daysInMonth) { d=new Date(calYear,calMonth+1,dc-daysInMonth); dc++; om=true; }
+    else { d=new Date(calYear,calMonth,dc++); }
+    const ds = toDateStr(d);
+    const isToday = ds===todayStr;
+    const evs = requests.filter(r=>r.start<=ds && r.end>=ds);
+    html += `<div class="cal-cell${om?' om':''}${isToday?' today':''}">`;
+    html += `<div class="dn">${d.getDate()}</div>`;
+    html += evs.slice(0,2).map(r=>`<div class="ev ${TYPE_CFG[r.type].ev}" title="${r.userName}">${r.userName.split(' ')[0]}</div>`).join('');
+    if (evs.length>2) html += `<div style="font-size:8px;color:#aeaeb2">+${evs.length-2}</div>`;
+    html += '</div>';
+  }
+  document.getElementById('calGrid').innerHTML = html;
+}
+
+function calMove(dir) {
+  calMonth += dir;
+  if (calMonth>11) { calMonth=0; calYear++; }
+  if (calMonth<0)  { calMonth=11; calYear--; }
+  renderCalendar();
+}
+
+function setFilter(f, btn) {
+  listFilter = f;
+  document.querySelectorAll('.fp').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderUpcoming();
+}
+
+function renderUpcoming() {
+  const todayStr = toDateStr(TODAY);
+  let list = requests
+    .filter(r=>r.end>=todayStr && (listFilter==='all' || r.type===listFilter))
+    .sort((a,b)=>a.start.localeCompare(b.start));
+  const el = document.getElementById('upcomingList');
+  if (!list.length) { el.innerHTML='<div class="empty">No upcoming time off</div>'; return; }
+  el.innerHTML = list.map(r=>{
+    const cfg = TYPE_CFG[r.type];
+    const idx = userIndex(r.userId);
+    const [bg,tc] = avColor(idx<0?0:idx);
+    return `<div class="abs-item">
+      <div class="abs-av" style="background:${bg};color:${tc}">${initials(r.userName)}</div>
+      <div class="abs-info">
+        <div class="abs-name">${r.userName}</div>
+        <div class="abs-date">${formatRange(r.start,r.end)}</div>
+      </div>
+      <span class="badge" style="background:${cfg.bg};color:${cfg.tc}">${cfg.label}</span>
+    </div>`;
+  }).join('');
+}
+
+// ─── MY TIME OFF ─────────────────────────────────────────
+function renderMyTime() {
+  const myReqs = requests.filter(r=>r.userId===currentUser.id).sort((a,b)=>b.start.localeCompare(a.start));
+  const el = document.getElementById('myEntries');
+  if (!myReqs.length) { el.innerHTML='<div class="empty">No requests yet — click "Request time off" to add one.</div>'; return; }
+  el.innerHTML = myReqs.map(r=>{
+    const cfg = TYPE_CFG[r.type];
+    const days = dayCount(r.start, r.end);
+    return `<div class="entry">
+      <div class="e-stripe" style="background:${cfg.stripe}"></div>
+      <div class="e-info">
+        <div class="e-type">${cfg.label}</div>
+        <div class="e-date">${formatRange(r.start,r.end)} &middot; ${days} day${days!==1?'s':''}</div>
+      </div>
+      <div class="e-acts">
+        <button class="btn-notify" onclick="triggerNotify('${r.id}')">&#9993; Notify</button>
+        <button class="btn-del" onclick="deleteRequest('${r.id}')" title="Delete">&#128465;</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── MODAL ───────────────────────────────────────────────
+function openModal() {
+  const todayStr = toDateStr(TODAY);
+  document.getElementById('mStart').value = todayStr;
+  document.getElementById('mEnd').value   = todayStr;
+  document.getElementById('mType').value  = 'vacation';
+  document.getElementById('mNotify').checked = true;
+  document.getElementById('modalErr').style.display = 'none';
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+
+function saveRequest() {
+  const type  = document.getElementById('mType').value;
+  const start = document.getElementById('mStart').value;
+  const end   = document.getElementById('mEnd').value;
+  const notify= document.getElementById('mNotify').checked;
+  const errEl = document.getElementById('modalErr');
+
+  if (!start || !end || end < start) {
+    errEl.style.display = 'block';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const req = {
+    id: 'r' + Date.now(),
+    userId:   currentUser.id,
+    userName: currentUser.name,
+    type, start, end,
+  };
+  requests.push(req);
+  saveData();
+  closeModal();
+  renderDashboard();
+
+  if (notify) { pendingNotify = req; showNotify(req); }
+
+  // Switch to My Time Off tab
+  const mineBtn = document.querySelectorAll('.nav-tab')[1];
+  showPanel('mine', mineBtn);
+}
+
+function deleteRequest(id) {
+  if (currentUser.role !== 'admin') {
+    const r = requests.find(x=>x.id===id);
+    if (!r || r.userId !== currentUser.id) return;
+  }
+  requests = requests.filter(x=>x.id!==id);
+  saveData();
+  renderDashboard();
+  renderMyTime();
+  if (document.getElementById('panelAdmin').classList.contains('show')) renderAdmin();
+}
+
+// ─── NOTIFICATIONS ───────────────────────────────────────
+function showNotify(req) {
+  const cfg  = TYPE_CFG[req.type];
+  const days = dayCount(req.start, req.end);
+  document.getElementById('notifyMsg').textContent =
+    `${currentUser.name} has logged ${cfg.label.toLowerCase()} from ${formatRange(req.start,req.end)} (${days} day${days!==1?'s':''}). Click below to email the team.`;
+  document.getElementById('notifyBar').classList.add('show');
+}
+function closeNotify() {
+  document.getElementById('notifyBar').classList.remove('show');
+  pendingNotify = null;
+}
+function triggerNotify(id) {
+  const req = requests.find(r=>r.id===id);
+  if (req) { pendingNotify=req; showNotify(req); }
+}
+function openNotifyEmail() {
+  if (!pendingNotify) return;
+  const r   = pendingNotify;
+  const cfg = TYPE_CFG[r.type];
+  const days = dayCount(r.start, r.end);
+  const sub  = encodeURIComponent(`[OOO] ${r.userName} – ${cfg.label} ${formatRange(r.start,r.end)}`);
+  const body = encodeURIComponent(
+    `Hi team,\n\n${r.userName} will be out of office:\n\nType: ${cfg.label}\nDates: ${formatRange(r.start,r.end)}\nDuration: ${days} day${days!==1?'s':''}\n\nPlease plan accordingly.\n\nSent via spARK Labs availability portal.`
+  );
+  window.location.href = `mailto:${TEAM_EMAILS}?subject=${sub}&body=${body}`;
+  closeNotify();
+}
+
+// ─── ADMIN ───────────────────────────────────────────────
+function showAdminTab(tab, btn) {
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ap').forEach(p=>p.classList.remove('show'));
+  document.getElementById(tab==='team'?'apTeam':'apRequests').classList.add('show');
+  renderAdmin();
+}
+
+function renderAdmin() {
+  const activeTab = document.querySelector('.atab.active');
+  if (!activeTab) return;
+  if (activeTab.textContent.includes('Team')) renderAdminTeam();
+  else renderAdminRequests();
+}
+
+function renderAdminTeam() {
+  const todayStr = toDateStr(TODAY);
+  document.getElementById('apTeam').innerHTML = `
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status today</th></tr></thead>
+      <tbody>${TEAM.map((u,i)=>{
+        const out = requests.some(r=>r.userId===u.id && r.start<=todayStr && r.end>=todayStr);
+        const [bg,tc] = avColor(i);
+        return `<tr>
+          <td style="display:flex;align-items:center;gap:9px">
+            <div style="width:28px;height:28px;border-radius:50%;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${initials(u.name)}</div>
+            <strong>${u.name}</strong>
+          </td>
+          <td style="color:#6e6e73">${u.email}</td>
+          <td><span class="u-role ${u.role==='admin'?'role-mgr':'role-emp'}">${u.role==='admin'?'Admin':'Employee'}</span></td>
+          <td><span class="dot ${out?'dot-out':'dot-in'}"></span>${out?'Out of office':'In office'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+}
+
+function renderAdminRequests() {
+  const sorted = [...requests].sort((a,b)=>b.start.localeCompare(a.start));
+  const opts = {month:'short',day:'numeric'};
+  document.getElementById('apRequests').innerHTML = sorted.length
+    ? `<div class="tbl-wrap"><table>
+        <thead><tr><th>Employee</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th></th></tr></thead>
+        <tbody>${sorted.map(r=>{
+          const cfg  = TYPE_CFG[r.type];
+          const days = dayCount(r.start, r.end);
+          return `<tr>
+            <td>${r.userName}</td>
+            <td><span class="badge" style="background:${cfg.bg};color:${cfg.tc}">${cfg.label}</span></td>
+            <td>${fromDateStr(r.start).toLocaleDateString('en-US',opts)}</td>
+            <td>${fromDateStr(r.end).toLocaleDateString('en-US',opts)}</td>
+            <td>${days}</td>
+            <td><button class="tbl-del" onclick="deleteRequest('${r.id}')" title="Delete">&#128465;</button></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>`
+    : '<div class="empty">No requests yet.</div>';
+}
+
+// ─── KEYBOARD ────────────────────────────────────────────
+document.getElementById('inEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('inPass').focus(); });
+document.getElementById('inPass').addEventListener('keydown',  e=>{ if(e.key==='Enter') doLogin(); });
+
+// ─── INIT ────────────────────────────────────────────────
+document.getElementById('loginPage').style.display = 'flex';
+document.getElementById('appPage').style.display   = 'none';
+</script>
+</body>
+</html>
