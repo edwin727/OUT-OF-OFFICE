@@ -7,17 +7,16 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --pink:#E8297A;--pink-l:#fce8f3;--pink-d:#a81a58;
-  --amber:#F5A623;--amber-l:#fef3e2;--amber-d:#8a5100;
+  --pink:#E8195A;--pink-l:#fde8ef;--pink-d:#b0103e;
+  --amber:#F5C842;--amber-l:#fefbe8;--amber-d:#7a5500;
   --bg:#f5f5f7;--card:#fff;--border:#e5e5ea;
   --text:#1d1d1f;--sub:#6e6e73;--muted:#aeaeb2;
+  --green:#34c759;--red:#ff3b30;--blue:#007aff;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
-
-/* ── SCREENS ── */
 #loginPage,#appPage{display:none;}
 
-/* ── LOGIN ── */
+/* LOGIN */
 #loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;background:linear-gradient(135deg,#1e2033,#2d3050);}
 .login-box{background:#fff;border-radius:18px;padding:2.5rem;width:100%;max-width:380px;box-shadow:0 24px 64px rgba(0,0,0,.35);}
 .brand{display:flex;align-items:center;gap:0;justify-content:center;margin-bottom:6px;}
@@ -28,45 +27,76 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .login-box h2{font-size:18px;font-weight:700;text-align:center;margin-bottom:1.25rem;}
 .field{margin-bottom:13px;}
 .field label{font-size:12px;font-weight:600;color:var(--sub);display:block;margin-bottom:5px;}
-.field input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:border-color .15s;}
-.field input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(232,41,122,.1);}
-.btn-login{width:100%;padding:11px;border:none;border-radius:10px;background:var(--pink);color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:opacity .15s;}
-.btn-login:hover{opacity:.88;}
-.login-err{display:none;font-size:12px;color:#ff3b30;background:#fff2f2;border:1px solid #ffd0d0;border-radius:8px;padding:9px 12px;margin-bottom:12px;}
-.login-hint{margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:center;line-height:1.9;}
-.login-hint strong{color:var(--sub);}
+.field input,.field select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;transition:border-color .15s;background:#fff;color:var(--text);}
+.field input:focus,.field select:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(232,41,122,.1);}
+.btn-pink{width:100%;padding:11px;border:none;border-radius:10px;background:var(--pink);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.btn-pink:hover{opacity:.88;}
+.err-box{display:none;font-size:12px;color:var(--red);background:#fff2f2;border:1px solid #ffd0d0;border-radius:8px;padding:9px 12px;margin-bottom:12px;}
 
-/* ── APP SHELL ── */
+/* APP */
 #appPage{min-height:100vh;background:var(--bg);}
 .topnav{height:54px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:sticky;top:0;z-index:50;gap:8px;flex-wrap:wrap;}
-.nav-tabs{display:flex;gap:2px;}
-.nav-tab{padding:6px 13px;border:none;border-radius:8px;background:none;font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.nav-tabs{display:flex;gap:2px;flex-wrap:wrap;}
+.nav-tab{padding:6px 11px;border:none;border-radius:8px;background:none;font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;white-space:nowrap;}
 .nav-tab:hover{background:var(--bg);}
 .nav-tab.active{background:var(--pink-l);color:var(--pink-d);font-weight:700;}
 .nav-right{display:flex;align-items:center;gap:8px;}
 .u-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;}
 .u-name{font-size:13px;font-weight:600;}
 .u-role{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
-.role-mgr{background:#fef3e2;color:#8a5100;}
-.role-emp{background:var(--bg);color:var(--sub);}
-.btn-signout{font-size:12px;padding:5px 11px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--sub);cursor:pointer;font-weight:500;}
-.btn-signout:hover{background:var(--bg);}
+.role-mgr{background:#fefbe8;color:#7a5500;}.role-emp{background:var(--bg);color:var(--sub);}
+.btn-sm{font-size:12px;padding:5px 11px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--sub);cursor:pointer;font-weight:500;}
+.btn-sm:hover{background:var(--bg);}
 
-/* ── PANELS ── */
-.panel{display:none;padding:1.25rem;max-width:1080px;margin:0 auto;}
+/* PANELS */
+.panel{display:none;padding:1.25rem;max-width:1100px;margin:0 auto;}
 .panel.show{display:block;}
 
-/* ── DASHBOARD ── */
+/* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1.25rem;}
-@media(min-width:480px){.stats-row{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:500px){.stats-row{grid-template-columns:repeat(4,1fr);}}
 .stat{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .stat-l{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
 .stat-v{font-size:26px;font-weight:800;color:var(--text);margin-top:2px;}
 .stat-s{font-size:11px;color:var(--muted);margin-top:1px;}
-.two-col{display:grid;grid-template-columns:1fr;gap:1.25rem;}
-@media(min-width:680px){.two-col{grid-template-columns:1fr 280px;}}
 
-/* ── CALENDAR ── */
+/* WHO'S IN */
+.whos-in{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1.25rem;}
+.whos-title{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.whos-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;}
+.whos-card{border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:9px;}
+.whos-card.in{background:#f0fdf4;border:1.5px solid #bbf7d0;}
+.whos-card.out{background:#fff5f5;border:1.5px solid #fecaca;}
+.whos-card.halfday{background:#fff8f0;border:1.5px solid #fed7aa;}
+.whos-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot-in{background:var(--green);}.dot-out{background:var(--red);}.dot-half{background:var(--amber);}
+.whos-name{font-size:12px;font-weight:600;}
+.whos-status{font-size:10px;color:var(--muted);margin-top:1px;}
+
+/* OVERLAP WARNING */
+.overlap-warn{background:#fff8f0;border:1.5px solid #fed7aa;border-radius:12px;padding:12px 16px;margin-bottom:1rem;display:none;}
+.overlap-warn.show{display:block;}
+.overlap-title{font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;}
+.overlap-item{font-size:12px;color:#92400e;margin-bottom:3px;}
+
+/* BURNOUT RADAR */
+.burnout-bar{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1.25rem;display:none;}
+.burnout-bar.show{display:block;}
+.burnout-title{font-size:13px;font-weight:700;margin-bottom:10px;color:#dc2626;display:flex;align-items:center;gap:6px;}
+.burnout-items{display:flex;flex-direction:column;gap:6px;}
+.burnout-item{font-size:12px;color:#7f1d1d;background:#fef2f2;border-radius:8px;padding:8px 12px;}
+
+/* RETURN REMINDERS */
+.return-bar{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:12px 16px;margin-bottom:1rem;display:none;}
+.return-bar.show{display:block;}
+.return-title{font-size:13px;font-weight:700;color:#1e40af;margin-bottom:6px;}
+.return-item{font-size:12px;color:#1e40af;margin-bottom:3px;}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:1fr;gap:1.25rem;}
+@media(min-width:700px){.two-col{grid-template-columns:1fr 280px;}}
+
+/* CALENDAR */
 .cal-card{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .cal-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
 .cal-title{font-size:15px;font-weight:700;}
@@ -77,21 +107,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cal-dow span{text-align:center;font-size:10px;font-weight:700;color:var(--muted);padding:3px 0;text-transform:uppercase;}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
 .cal-cell{min-height:56px;padding:4px;border-radius:6px;background:#fafafa;}
-.cal-cell.today{background:#fff0f7;}
+.cal-cell.today{background:#fff0f5;}
+.cal-cell.holiday{background:#fffbeb;}
 .cal-cell.om .dn{color:#d2d2d7;}
 .dn{font-size:11px;font-weight:700;color:var(--sub);margin-bottom:2px;}
 .cal-cell.today .dn{background:var(--pink);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;}
 .ev{font-size:9px;font-weight:600;padding:1px 4px;border-radius:4px;margin-bottom:1px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
-.ev-vacation{background:#fce8f3;color:#a81a58;}
-.ev-sick{background:#fef3e2;color:#8a5100;}
+.ev-vacation{background:#fde8ef;color:#b0103e;}
+.ev-sick{background:#fefbe8;color:#7a5500;}
 .ev-personal{background:#e8f4ff;color:#0c447c;}
 .ev-conference{background:#f0effe;color:#3c3489;}
+.ev-holiday{background:#fffbeb;color:#92400e;font-style:italic;}
 
-/* ── UPCOMING LIST ── */
+/* LIST */
 .list-card{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .sec-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
 .filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
-.fp{font-size:11px;padding:4px 10px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--sub);cursor:pointer;font-weight:500;transition:all .15s;}
+.fp{font-size:11px;padding:4px 10px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--sub);cursor:pointer;font-weight:500;}
 .fp.on{background:var(--pink);color:#fff;border-color:var(--pink);}
 .abs-list{display:flex;flex-direction:column;gap:8px;}
 .abs-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;background:var(--bg);}
@@ -102,16 +134,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;}
 .empty{text-align:center;padding:2rem;color:var(--muted);font-size:13px;}
 
-/* ── MY TIME OFF ── */
+/* MY TIME OFF */
 .my-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px;}
 .pg-title{font-size:20px;font-weight:800;}
-.btn-add{background:var(--pink);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.btn-add{background:var(--pink);color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;}
 .btn-add:hover{opacity:.88;}
+
+/* AI BAR */
+.ai-bar{background:linear-gradient(135deg,#667eea,#764ba2);border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ai-input-wrap{display:flex;gap:8px;flex:1;min-width:200px;}
+.ai-input{flex:1;padding:9px 13px;border:none;border-radius:10px;font-size:13px;outline:none;}
+.btn-ai{background:#fff;color:#667eea;border:none;padding:9px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;}
+.btn-ai:hover{opacity:.9;}
+.ai-label{font-size:12px;color:rgba(255,255,255,.85);font-weight:600;white-space:nowrap;}
+.ai-result{background:rgba(255,255,255,.15);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:#fff;display:none;width:100%;}
+.ai-result.show{display:block;}
+
+/* NOTIFY BAR */
 .notify-bar{display:none;align-items:flex-start;gap:12px;background:var(--pink-l);border:1.5px solid rgba(232,41,122,.25);border-radius:12px;padding:12px 16px;margin-bottom:1rem;}
 .notify-bar.show{display:flex;}
 .nb-text{flex:1;font-size:13px;color:var(--pink-d);line-height:1.5;}
 .nb-link{color:var(--pink);font-weight:700;cursor:pointer;font-size:12px;}
 .nb-close{background:none;border:none;cursor:pointer;color:var(--pink-d);font-size:20px;line-height:1;flex-shrink:0;}
+
+/* ENTRIES */
 .entries{display:flex;flex-direction:column;gap:8px;}
 .entry{background:#fff;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);}
 .e-stripe{width:4px;height:40px;border-radius:3px;flex-shrink:0;}
@@ -120,12 +166,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .e-date{font-size:11px;color:var(--sub);margin-top:2px;}
 .e-acts{display:flex;gap:6px;align-items:center;}
 .btn-notify{background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--sub);cursor:pointer;font-weight:600;}
-.btn-notify:hover{background:var(--bg);}
+.btn-export{background:none;border:1.5px solid var(--blue);border-radius:8px;padding:5px 10px;font-size:11px;color:var(--blue);cursor:pointer;font-weight:600;}
 .btn-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px;line-height:1;}
-.btn-del:hover{color:#ff3b30;}
+.btn-del:hover{color:var(--red);}
 
-/* ── ADMIN ── */
-.admin-tabs{display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:10px;}
+/* ADMIN */
+.admin-tabs{display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid var(--border);padding-bottom:10px;flex-wrap:wrap;}
 .atab{padding:6px 14px;border:none;border-radius:8px;background:none;font-size:13px;color:var(--sub);cursor:pointer;font-weight:500;}
 .atab.active{background:var(--amber-l);color:var(--amber-d);font-weight:700;}
 .ap{display:none;}.ap.show{display:block;}
@@ -135,88 +181,177 @@ th{text-align:left;padding:11px 14px;font-size:10px;font-weight:700;color:var(--
 td{padding:11px 14px;border-bottom:1px solid #f5f5f7;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:#fafafa;}
-.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;}
-.dot-out{background:#ff3b30;}.dot-in{background:#34c759;}
 .tbl-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:2px 6px;}
-.tbl-del:hover{color:#ff3b30;}
+.tbl-del:hover{color:var(--red);}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center;padding:1rem;}
 .modal-bg.open{display:flex;}
-.modal{background:#fff;border-radius:18px;padding:1.75rem;width:100%;max-width:360px;box-shadow:0 24px 64px rgba(0,0,0,.25);}
+.modal{background:#fff;border-radius:18px;padding:1.75rem;width:100%;max-width:400px;box-shadow:0 24px 64px rgba(0,0,0,.25);max-height:90vh;overflow-y:auto;}
 .modal h3{font-size:17px;font-weight:800;margin-bottom:1.25rem;}
 .frow{margin-bottom:14px;}
 .frow label{font-size:12px;font-weight:700;color:var(--sub);display:block;margin-bottom:5px;}
-.frow select,.frow input[type=date]{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:#fff;}
+.frow select,.frow input[type=date],.frow input[type=text],.frow input[type=email],.frow input[type=password]{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;outline:none;background:#fff;}
 .frow select:focus,.frow input:focus{border-color:var(--pink);}
+.half-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .frow-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--sub);font-weight:500;}
 .frow-check input{accent-color:var(--pink);width:16px;height:16px;}
 .m-acts{display:flex;gap:8px;margin-top:1.5rem;justify-content:flex-end;}
 .btn-cancel{padding:9px 16px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--sub);font-size:13px;font-weight:600;cursor:pointer;}
 .btn-save{padding:9px 18px;border-radius:10px;border:none;background:var(--pink);color:#fff;font-size:13px;font-weight:700;cursor:pointer;}
-.ferr{display:none;font-size:12px;color:#ff3b30;background:#fff2f2;border:1px solid #ffd0d0;border-radius:8px;padding:8px 12px;margin-bottom:12px;}
 
-@media(max-width:480px){
+/* ADD MEMBER MODAL */
+.modal-sm{max-width:360px;}
+
+/* AI SUGGESTION */
+.ai-suggestion{background:#f0f9ff;border:1.5px solid #bae6fd;border-radius:12px;padding:12px 16px;margin-bottom:1rem;display:none;}
+.ai-suggestion.show{display:block;}
+.ai-sug-title{font-size:13px;font-weight:700;color:#0c4a6e;margin-bottom:4px;}
+.ai-sug-text{font-size:12px;color:#075985;line-height:1.5;}
+.btn-use-dates{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;margin-top:8px;}
+
+
+/* ── MOBILE FIRST ── */
+@media(max-width:600px){
+  .topnav{height:auto;padding:8px 12px;gap:6px;}
+  .nav-tabs{gap:2px;}
+  .nav-tab{padding:5px 8px;font-size:11px;}
   .u-name{display:none;}
-  .nav-tab{padding:5px 9px;font-size:12px;}
+  .u-role{display:none;}
+  .btn-sm{font-size:11px;padding:4px 8px;}
+  .b-ark,.b-labs{font-size:15px;padding:3px 7px;}
+  .b-sp{font-size:11px;padding:3px 5px;}
+  .panel{padding:0.75rem;}
+  .stats-row{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:0.85rem;}
+  .stat{padding:10px 12px;}
+  .stat-v{font-size:22px;}
+  .whos-grid{grid-template-columns:repeat(2,1fr);}
+  .whos-card{padding:8px 10px;}
+  .two-col{grid-template-columns:1fr !important;}
+  .cal-card{padding:0.85rem;}
+  .cal-cell{min-height:40px;padding:2px 3px;}
+  .dn{font-size:10px;}
+  .ev{font-size:8px;padding:1px 2px;}
+  .list-card{padding:0.85rem;}
+  .filter-row{gap:4px;}
+  .fp{font-size:10px;padding:3px 8px;}
+  .abs-item{padding:7px 8px;gap:8px;}
+  .abs-av{width:28px;height:28px;font-size:10px;}
+  .abs-name{font-size:12px;}
+  .abs-date{font-size:10px;}
+  .badge{font-size:9px;padding:2px 6px;}
+  .my-hdr{flex-direction:row;align-items:center;}
+  .pg-title{font-size:17px;}
+  .btn-add{font-size:12px;padding:7px 13px;}
+  .ai-bar{flex-direction:column;gap:8px;padding:0.85rem;}
+  .ai-input-wrap{width:100%;}
+  .ai-input{font-size:12px;padding:8px 10px;}
+  .btn-ai{padding:8px 12px;font-size:12px;}
+  .ai-label{font-size:11px;}
+  .entry{padding:10px 12px;gap:8px;}
+  .e-type{font-size:12px;}
+  .e-date{font-size:10px;}
+  .e-acts{gap:4px;}
+  .btn-notify,.btn-export{font-size:10px;padding:4px 7px;}
+  .entries{gap:6px;}
+  .whos-in{padding:0.85rem;}
+  .whos-title{font-size:12px;}
+  .whos-name{font-size:11px;}
+  .whos-status{font-size:9px;}
+  .overlap-warn,.return-bar,.burnout-bar{padding:10px 12px;}
+  .overlap-title,.return-title,.burnout-title{font-size:12px;}
+  .overlap-item,.return-item,.burnout-item{font-size:11px;}
+  .admin-tabs{gap:3px;}
+  .atab{font-size:11px;padding:5px 10px;}
+  table{font-size:11px;}
+  th{padding:8px 10px;font-size:9px;}
+  td{padding:8px 10px;}
+  .modal{padding:1.25rem;}
+  .modal h3{font-size:15px;}
+  .frow input,.frow select{font-size:13px;padding:9px 11px;}
+  .login-box{padding:1.75rem 1.25rem;}
+  .login-box h2{font-size:16px;}
+  .stat-l{font-size:9px;}
+  .stat-s{font-size:10px;}
+  .sec-title{font-size:10px;}
+  .notify-bar{padding:10px 12px;}
+  .nb-text{font-size:12px;}
 }
+@media(max-width:380px){
+  .nav-tab{padding:4px 6px;font-size:10px;}
+  .whos-grid{grid-template-columns:1fr 1fr;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .two-col{gap:0.75rem;}
+}
+
 </style>
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="loginPage">
   <div class="login-box">
     <div class="brand"><span class="b-sp">sp</span><span class="b-ark">ARK</span><span class="b-labs">LABS</span></div>
     <div class="login-sub">by ARK Invest &nbsp;·&nbsp; Team availability</div>
     <h2>Sign in</h2>
-    <div class="login-err" id="loginErr"></div>
-    <div class="field">
-      <label>Work email</label>
-      <input type="email" id="inEmail" placeholder="e.g. deeke@sp-ark-labs.com" autocomplete="username"/>
+    <div class="err-box" id="loginErr"></div>
+    <div class="field"><label>Work email</label>
+      <input type="email" id="inEmail" placeholder="your@sp-ark-labs.com" autocomplete="username"/>
     </div>
-    <div class="field">
-      <label>Password</label>
+    <div class="field"><label>Password</label>
       <input type="password" id="inPass" placeholder="••••••••" autocomplete="current-password"/>
     </div>
-    <button class="btn-login" onclick="doLogin()">Sign in &rarr;</button>
-    <div class="login-hint">
-      <strong>Your login:</strong><br>
-      deeke@sp-ark-labs.com &nbsp;/&nbsp; edwin123<br>
-      BernardC@sp-ark-labs.com &nbsp;/&nbsp; becca123<br>
-      BrownR@sp-ark-labs.com &nbsp;/&nbsp; cassandra123<br>
-      caitlinr@sp-ark-labs.com &nbsp;/&nbsp; caitlin123<br>
-      CookC@sp-ark-labs.com &nbsp;/&nbsp; cassidy123<br>
-      DoyleL@sp-ark-labs.com &nbsp;/&nbsp; larry123<br>
-      friesenj@sp-ark-labs.com &nbsp;/&nbsp; jennifer123<br>
-      KangE@sp-ark-labs.com &nbsp;/&nbsp; ed123
-    </div>
+    <button class="btn-pink" onclick="doLogin()">Sign in &rarr;</button>
   </div>
 </div>
 
-<!-- APP PAGE -->
+<!-- APP -->
 <div id="appPage">
-  <!-- NAV -->
   <div class="topnav">
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div style="display:flex;align-items:center;gap:10px;">
       <div class="brand"><span class="b-sp">sp</span><span class="b-ark">ARK</span><span class="b-labs">LABS</span></div>
       <div class="nav-tabs">
-        <button class="nav-tab active" onclick="showPanel('dash',this)">Dashboard</button>
-        <button class="nav-tab" onclick="showPanel('mine',this)">My time off</button>
-        <button class="nav-tab" id="adminTab" style="display:none" onclick="showPanel('admin',this)">Admin</button>
+        <button class="nav-tab active" onclick="showPanel('Dash',this)">Dashboard</button>
+        <button class="nav-tab" onclick="showPanel('Mine',this)">My time off</button>
+        <button class="nav-tab" id="adminTab" style="display:none" onclick="showPanel('Admin',this)">Admin</button>
       </div>
     </div>
     <div class="nav-right">
       <div class="u-av" id="navAv"></div>
       <span class="u-name" id="navName"></span>
       <span class="u-role" id="navRole"></span>
-      <button class="btn-signout" onclick="doLogout()">Sign out</button>
+      <button class="btn-sm" onclick="doLogout()">Sign out</button>
     </div>
   </div>
 
   <!-- DASHBOARD -->
   <div class="panel show" id="panelDash">
     <div class="stats-row" id="statsRow"></div>
+
+    <!-- WHO'S IN TODAY -->
+    <div class="whos-in">
+      <div class="whos-title">👥 Who's in today</div>
+      <div class="whos-grid" id="whosGrid"></div>
+    </div>
+
+    <!-- RETURN REMINDERS (admin only) -->
+    <div class="return-bar" id="returnBar">
+      <div class="return-title">🔔 Return reminders for tomorrow</div>
+      <div id="returnItems"></div>
+    </div>
+
+    <!-- OVERLAP WARNINGS -->
+    <div class="overlap-warn" id="overlapWarn">
+      <div class="overlap-title">⚠️ Staffing overlap alerts</div>
+      <div id="overlapItems"></div>
+    </div>
+
+    <!-- BURNOUT RADAR (admin only) -->
+    <div class="burnout-bar" id="burnoutBar">
+      <div class="burnout-title">🔥 Burnout radar</div>
+      <div class="burnout-items" id="burnoutItems"></div>
+    </div>
+
     <div class="two-col">
       <div class="cal-card">
         <div class="cal-top">
@@ -245,10 +380,26 @@ tr:hover td{background:#fafafa;}
 
   <!-- MY TIME OFF -->
   <div class="panel" id="panelMine">
+    <!-- AI Natural Language -->
+    <div class="ai-bar">
+      <span class="ai-label">🤖 AI assist:</span>
+      <div class="ai-input-wrap">
+        <input class="ai-input" id="aiInput" placeholder='Try "I need next Friday off" or "book me a week in August"'/>
+        <button class="btn-ai" onclick="runAI()">Ask AI</button>
+      </div>
+      <div class="ai-result" id="aiResult"></div>
+    </div>
+
+    <!-- AI Smart Suggestion -->
+    <div class="ai-suggestion" id="aiSuggestion">
+      <div class="ai-sug-title">💡 AI scheduling suggestion</div>
+      <div class="ai-sug-text" id="aiSugText"></div>
+      <button class="btn-use-dates" id="aiUseDates" onclick="useSuggestedDates()">Use suggested dates</button>
+    </div>
+
     <div class="notify-bar" id="notifyBar">
-      <div class="nb-text">
-        <strong>Notify your team?</strong> <span id="notifyMsg"></span><br>
-        <span class="nb-link" onclick="openNotifyEmail()">&#9993; Open email to team</span>
+      <div class="nb-text"><strong>Notify your team?</strong> <span id="notifyMsg"></span><br>
+        <span class="nb-link" onclick="openNotifyEmail()">✉ Open email to team</span>
       </div>
       <button class="nb-close" onclick="closeNotify()">&#215;</button>
     </div>
@@ -266,19 +417,20 @@ tr:hover td{background:#fafafa;}
     <div class="admin-tabs">
       <button class="atab active" onclick="showAdminTab('team',this)">Team roster</button>
       <button class="atab" onclick="showAdminTab('requests',this)">All requests</button>
+      <button class="atab" onclick="showAdminTab('members',this)">Manage members</button>
     </div>
     <div class="ap show" id="apTeam"></div>
     <div class="ap" id="apRequests"></div>
+    <div class="ap" id="apMembers"></div>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- REQUEST MODAL -->
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <h3>Request time off</h3>
-    <div class="ferr" id="modalErr">Please check your dates.</div>
-    <div class="frow">
-      <label>Type</label>
+    <div class="err-box" id="modalErr">Please check your dates.</div>
+    <div class="frow"><label>Type</label>
       <select id="mType">
         <option value="vacation">🌴 Vacation</option>
         <option value="sick">🤒 Sick leave</option>
@@ -286,19 +438,17 @@ tr:hover td{background:#fafafa;}
         <option value="conference">🎤 Conference / Event</option>
       </select>
     </div>
-    <div class="frow">
-      <label>Start date</label>
-      <input type="date" id="mStart"/>
+    <div class="frow"><label>Start date</label><input type="date" id="mStart" onchange="checkOverlapLive()"/></div>
+    <div class="frow"><label>End date</label><input type="date" id="mEnd" onchange="checkOverlapLive()"/></div>
+    <div class="frow"><label>Half day?</label>
+      <select id="mHalf">
+        <option value="full">Full day(s)</option>
+        <option value="morning">Morning only</option>
+        <option value="afternoon">Afternoon only</option>
+      </select>
     </div>
-    <div class="frow">
-      <label>End date</label>
-      <input type="date" id="mEnd"/>
-    </div>
-    <div class="frow">
-      <label class="frow-check">
-        <input type="checkbox" id="mNotify" checked/> Email the team about this
-      </label>
-    </div>
+    <div class="err-box" id="overlapModalWarn" style="background:#fff8f0;border-color:#fed7aa;color:#92400e;"></div>
+    <div class="frow"><label class="frow-check"><input type="checkbox" id="mNotify" checked/> Email team notification</label></div>
     <div class="m-acts">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
       <button class="btn-save" onclick="saveRequest()">Save</button>
@@ -306,391 +456,702 @@ tr:hover td{background:#fafafa;}
   </div>
 </div>
 
+<!-- ADD MEMBER MODAL -->
+<div class="modal-bg" id="memberModalBg" onclick="if(event.target===this)closeMemberModal()">
+  <div class="modal modal-sm">
+    <h3 id="memberModalTitle">Add team member</h3>
+    <div class="err-box" id="memberErr"></div>
+    <div class="frow"><label>Full name</label><input type="text" id="mName" placeholder="Jane Smith"/></div>
+    <div class="frow"><label>Email</label><input type="email" id="mEmail" placeholder="jane@sp-ark-labs.com"/></div>
+    <div class="frow"><label>Password</label><input type="password" id="mPass" placeholder="password123"/></div>
+    <div class="frow"><label>Role</label>
+      <select id="mRole"><option value="employee">Employee</option><option value="admin">Admin</option></select>
+    </div>
+    <div class="m-acts">
+      <button class="btn-cancel" onclick="closeMemberModal()">Cancel</button>
+      <button class="btn-save" onclick="saveMember()">Add member</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ─── DATA ───────────────────────────────────────────────
-const TEAM = [
-  {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',    pass:'edwin123',    role:'admin'},
-  {id:'cassandra',name:'Cassandra', email:'BrownR@sp-ark-labs.com',   pass:'cassandra123',role:'employee'},
-  {id:'caitlin',  name:'Caitlin',   email:'caitlinr@sp-ark-labs.com', pass:'caitlin123',  role:'employee'},
-  {id:'becca',    name:'Becca',     email:'BernardC@sp-ark-labs.com', pass:'becca123',    role:'admin'},
-  {id:'cassidy',  name:'Cassidy',   email:'CookC@sp-ark-labs.com',    pass:'cassidy123',  role:'employee'},
-  {id:'larry',    name:'Larry',     email:'DoyleL@sp-ark-labs.com',   pass:'larry123',    role:'employee'},
-  {id:'jennifer', name:'Jennifer',  email:'friesenj@sp-ark-labs.com', pass:'jennifer123', role:'employee'},
-  {id:'ed',       name:'Ed',        email:'KangE@sp-ark-labs.com',    pass:'ed123',       role:'employee'},
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const DEFAULT_TEAM = [
+  {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',     pass:'edwin123',    role:'admin'},
+  {id:'cassandra',name:'Cassandra', email:'BrownR@sp-ark-labs.com',    pass:'cassandra123',role:'employee'},
+  {id:'caitlin',  name:'Caitlin',   email:'caitlinr@sp-ark-labs.com',  pass:'caitlin123',  role:'employee'},
+  {id:'becca',    name:'Becca',     email:'BernardC@sp-ark-labs.com',  pass:'becca123',    role:'admin'},
+  {id:'cassidy',  name:'Cassidy',   email:'CookC@sp-ark-labs.com',     pass:'cassidy123',  role:'employee'},
+  {id:'larry',    name:'Larry',     email:'DoyleL@sp-ark-labs.com',    pass:'larry123',    role:'employee'},
+  {id:'jennifer', name:'Jennifer',  email:'friesenj@sp-ark-labs.com',  pass:'jennifer123', role:'employee'},
+  {id:'ed',       name:'Ed',        email:'KangE@sp-ark-labs.com',     pass:'ed123',       role:'employee'},
 ];
 
-const TEAM_EMAILS = TEAM.map(t=>t.email).join(',');
-
 const TYPE_CFG = {
-  vacation:   {label:'Vacation',   bg:'#fce8f3',tc:'#a81a58',stripe:'#E8297A', ev:'ev-vacation'},
-  sick:       {label:'Sick leave', bg:'#fef3e2',tc:'#8a5100',stripe:'#F5A623', ev:'ev-sick'},
-  personal:   {label:'Personal',   bg:'#e8f4ff',tc:'#0c447c',stripe:'#378ADD', ev:'ev-personal'},
-  conference: {label:'Conference', bg:'#f0effe',tc:'#3c3489',stripe:'#7F77DD', ev:'ev-conference'},
+  vacation:   {label:'Vacation',   bg:'#fde8ef',tc:'#b0103e',stripe:'#E8195A',ev:'ev-vacation'},
+  sick:       {label:'Sick leave', bg:'#fefbe8',tc:'#7a5500',stripe:'#F5C842',ev:'ev-sick'},
+  personal:   {label:'Personal',   bg:'#e8f4ff',tc:'#0c447c',stripe:'#378ADD',ev:'ev-personal'},
+  conference: {label:'Conference', bg:'#f0effe',tc:'#3c3489',stripe:'#7F77DD',ev:'ev-conference'},
 };
 
 const AV_COLORS = [
-  ['#fce8f3','#a81a58'],['#fef3e2','#8a5100'],['#e8f4ff','#0c447c'],['#f0effe','#3c3489'],
+  ['#fde8ef','#b0103e'],['#fefbe8','#7a5500'],['#e8f4ff','#0c447c'],['#f0effe','#3c3489'],
   ['#e1f5ee','#085041'],['#fff3e0','#7d4e00'],['#fce4ec','#880e4f'],['#e8f5e9','#1b5e20']
 ];
 
-// ─── STATE ──────────────────────────────────────────────
+// US Federal Holidays (month is 0-indexed)
+function getHolidays(year) {
+  return [
+    {date:`${year}-01-01`,name:"New Year's Day"},
+    {date:`${year}-01-20`,name:'MLK Day'},
+    {date:`${year}-02-17`,name:"Presidents' Day"},
+    {date:`${year}-05-26`,name:'Memorial Day'},
+    {date:`${year}-06-19`,name:'Juneteenth'},
+    {date:`${year}-07-04`,name:'Independence Day'},
+    {date:`${year}-09-01`,name:'Labor Day'},
+    {date:`${year}-10-13`,name:'Columbus Day'},
+    {date:`${year}-11-11`,name:'Veterans Day'},
+    {date:`${year}-11-27`,name:'Thanksgiving'},
+    {date:`${year}-12-25`,name:'Christmas Day'},
+    // next year too for calendar nav
+    {date:`${year+1}-01-01`,name:"New Year's Day"},
+    {date:`${year+1}-07-04`,name:'Independence Day'},
+    {date:`${year+1}-11-26`,name:'Thanksgiving'},
+    {date:`${year+1}-12-25`,name:'Christmas Day'},
+  ];
+}
+
+// ═══════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════
 let currentUser = null;
 let requests    = [];
+let TEAM        = [];
 let calYear     = new Date().getFullYear();
 let calMonth    = new Date().getMonth();
 let listFilter  = 'all';
 let pendingNotify = null;
+let aiSuggestedStart = null;
+let aiSuggestedEnd   = null;
 
 const TODAY = new Date();
 TODAY.setHours(0,0,0,0);
+const HOLIDAYS = getHolidays(TODAY.getFullYear());
 
-// ─── STORAGE ────────────────────────────────────────────
-function saveData() {
-  try { localStorage.setItem('sparklabs_ooo', JSON.stringify(requests)); } catch(e){}
+// ═══════════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════════
+function saveAll() {
+  try {
+    localStorage.setItem('sl_requests', JSON.stringify(requests));
+    localStorage.setItem('sl_team',     JSON.stringify(TEAM));
+  } catch(e){}
 }
-function loadData() {
-  try { requests = JSON.parse(localStorage.getItem('sparklabs_ooo') || '[]'); } catch(e){ requests=[]; }
-}
-
-// ─── HELPERS ────────────────────────────────────────────
-function toDateStr(d) { return d.toISOString().split('T')[0]; }
-function fromDateStr(s) { const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
-function initials(name) { return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
-function avColor(idx) { return AV_COLORS[idx % AV_COLORS.length]; }
-function userIndex(id) { return TEAM.findIndex(t=>t.id===id); }
-function formatRange(s, e) {
-  const o = {month:'short', day:'numeric'};
-  return s===e ? fromDateStr(s).toLocaleDateString('en-US',o)
-               : fromDateStr(s).toLocaleDateString('en-US',o)+' – '+fromDateStr(e).toLocaleDateString('en-US',o);
-}
-function dayCount(s, e) {
-  return Math.round((fromDateStr(e)-fromDateStr(s))/86400000)+1;
+function loadAll() {
+  try {
+    const t = localStorage.getItem('sl_team');
+    TEAM = t ? JSON.parse(t) : JSON.parse(JSON.stringify(DEFAULT_TEAM));
+    const r = localStorage.getItem('sl_requests');
+    requests = r ? JSON.parse(r) : [];
+  } catch(e) {
+    TEAM = JSON.parse(JSON.stringify(DEFAULT_TEAM));
+    requests = [];
+  }
 }
 
-// ─── AUTH ────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════
+function toStr(d)  { return d.toISOString().split('T')[0]; }
+function fromStr(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function ini(name) { return name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2); }
+function avc(idx)  { return AV_COLORS[idx % AV_COLORS.length]; }
+function uidx(id)  { return TEAM.findIndex(t=>t.id===id); }
+function fmtRange(s,e) {
+  const o={month:'short',day:'numeric'};
+  return s===e ? fromStr(s).toLocaleDateString('en-US',o)
+               : fromStr(s).toLocaleDateString('en-US',o)+' – '+fromStr(e).toLocaleDateString('en-US',o);
+}
+function dayCount(s,e){ return Math.round((fromStr(e)-fromStr(s))/86400000)+1; }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function isHoliday(ds){ return HOLIDAYS.find(h=>h.date===ds); }
+function nextWeekday(d){
+  const r=new Date(d);
+  while(r.getDay()===0||r.getDay()===6) r.setDate(r.getDate()+1);
+  return r;
+}
+
+// ═══════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════
 function doLogin() {
   const email = document.getElementById('inEmail').value.trim();
   const pass  = document.getElementById('inPass').value.trim();
   const errEl = document.getElementById('loginErr');
-
-  if (!email || !pass) {
-    errEl.textContent = 'Please enter your email and password.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  const user = TEAM.find(t => t.email.toLowerCase() === email.toLowerCase() && t.pass === pass);
-
-  if (!user) {
-    errEl.textContent = 'Email or password incorrect. Check the login list below — passwords are firstname123.';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  errEl.style.display = 'none';
-  currentUser = user;
-  loadData();
-  document.getElementById('loginPage').style.display = 'none';
-  document.getElementById('appPage').style.display = 'block';
+  if (!email||!pass){ errEl.textContent='Please enter your email and password.'; errEl.style.display='block'; return; }
+  loadAll();
+  const user = TEAM.find(t=>t.email.toLowerCase()===email.toLowerCase()&&t.pass===pass);
+  if (!user){ errEl.textContent='Email or password incorrect. Please try again.'; errEl.style.display='block'; return; }
+  errEl.style.display='none';
+  currentUser=user;
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('appPage').style.display='block';
   setupNav();
   renderDashboard();
 }
-
-function doLogout() {
-  currentUser = null;
-  pendingNotify = null;
-  document.getElementById('appPage').style.display = 'none';
-  document.getElementById('loginPage').style.display = 'flex';
-  document.getElementById('inEmail').value = '';
-  document.getElementById('inPass').value = '';
-  document.getElementById('loginErr').style.display = 'none';
-  // reset panels
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector('.nav-tab').classList.add('active');
+function doLogout(){
+  currentUser=null; pendingNotify=null;
+  document.getElementById('appPage').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('inEmail').value='';
+  document.getElementById('inPass').value='';
+  document.getElementById('loginErr').style.display='none';
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
   document.getElementById('panelDash').classList.add('show');
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.nav-tab').classList.add('active');
 }
 
-// ─── NAV SETUP ───────────────────────────────────────────
-function setupNav() {
-  const u = currentUser;
-  const idx = userIndex(u.id);
-  const [bg, tc] = avColor(idx);
-  const av = document.getElementById('navAv');
-  av.textContent = initials(u.name);
-  av.style.background = bg;
-  av.style.color = tc;
-  document.getElementById('navName').textContent = u.name;
-  const roleEl = document.getElementById('navRole');
-  roleEl.textContent = u.role === 'admin' ? 'Admin' : 'Employee';
-  roleEl.className = 'u-role ' + (u.role === 'admin' ? 'role-mgr' : 'role-emp');
-  document.getElementById('adminTab').style.display = u.role === 'admin' ? '' : 'none';
+// ═══════════════════════════════════════════════════
+// NAV
+// ═══════════════════════════════════════════════════
+function setupNav(){
+  const u=currentUser, idx=uidx(u.id);
+  const [bg,tc]=avc(idx<0?0:idx);
+  const av=document.getElementById('navAv');
+  av.textContent=ini(u.name); av.style.background=bg; av.style.color=tc;
+  document.getElementById('navName').textContent=u.name;
+  const re=document.getElementById('navRole');
+  re.textContent=u.role==='admin'?'Admin':'Employee';
+  re.className='u-role '+(u.role==='admin'?'role-mgr':'role-emp');
+  document.getElementById('adminTab').style.display=u.role==='admin'?'':'none';
 }
-
-function showPanel(name, btn) {
+function showPanel(name,btn){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('show'));
-  document.getElementById('panel'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('show');
-  if (name==='mine') renderMyTime();
-  if (name==='admin') renderAdmin();
+  document.getElementById('panel'+name).classList.add('show');
+  if(name==='Mine')  renderMyTime();
+  if(name==='Admin') renderAdmin();
 }
 
-// ─── DASHBOARD ───────────────────────────────────────────
-function renderDashboard() {
-  renderStats();
-  renderCalendar();
-  renderUpcoming();
+// ═══════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════
+function renderDashboard(){
+  renderStats(); renderWhosIn(); renderCalendar(); renderUpcoming();
+  renderOverlapWarnings(); renderReturnReminders(); renderBurnoutRadar();
 }
 
-function renderStats() {
-  const todayStr = toDateStr(TODAY);
-  const weekEnd  = toDateStr(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()+7));
-  const outToday = requests.filter(r=>r.start<=todayStr && r.end>=todayStr).length;
-  const outWeek  = requests.filter(r=>r.start<=weekEnd  && r.end>=todayStr).length;
-  const upcoming = requests.filter(r=>r.start>todayStr).length;
-  document.getElementById('statsRow').innerHTML = [
-    {l:'Out today',   v:outToday, s:'team members'},
-    {l:'Out this week',v:outWeek, s:'incl. today'},
-    {l:'Upcoming',    v:upcoming, s:'time off logged'},
-    {l:'Team size',   v:TEAM.length, s:'members total'},
+function renderStats(){
+  const ts=toStr(TODAY), we=toStr(addDays(TODAY,7));
+  const ot=requests.filter(r=>r.start<=ts&&r.end>=ts).length;
+  const ow=requests.filter(r=>r.start<=we&&r.end>=ts).length;
+  const up=requests.filter(r=>r.start>ts).length;
+  document.getElementById('statsRow').innerHTML=[
+    {l:'Out today',   v:ot, s:'team members'},
+    {l:'Out this week',v:ow,s:'incl. today'},
+    {l:'Upcoming',    v:up, s:'time off logged'},
+    {l:'Team size',   v:TEAM.length, s:'members'},
   ].map(x=>`<div class="stat"><div class="stat-l">${x.l}</div><div class="stat-v">${x.v}</div><div class="stat-s">${x.s}</div></div>`).join('');
 }
 
-function renderCalendar() {
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('calLabel').textContent = MONTHS[calMonth]+' '+calYear;
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  const todayStr = toDateStr(TODAY);
-  const total = Math.ceil((firstDay+daysInMonth)/7)*7;
-  let html = '';
-  let dc = 1;
-  for (let i=0; i<total; i++) {
-    let d, om=false;
-    if (i<firstDay) { d=new Date(calYear,calMonth-1,new Date(calYear,calMonth,0).getDate()-firstDay+i+1); om=true; }
-    else if (dc>daysInMonth) { d=new Date(calYear,calMonth+1,dc-daysInMonth); dc++; om=true; }
-    else { d=new Date(calYear,calMonth,dc++); }
-    const ds = toDateStr(d);
-    const isToday = ds===todayStr;
-    const evs = requests.filter(r=>r.start<=ds && r.end>=ds);
-    html += `<div class="cal-cell${om?' om':''}${isToday?' today':''}">`;
-    html += `<div class="dn">${d.getDate()}</div>`;
-    html += evs.slice(0,2).map(r=>`<div class="ev ${TYPE_CFG[r.type].ev}" title="${r.userName}">${r.userName.split(' ')[0]}</div>`).join('');
-    if (evs.length>2) html += `<div style="font-size:8px;color:#aeaeb2">+${evs.length-2}</div>`;
-    html += '</div>';
-  }
-  document.getElementById('calGrid').innerHTML = html;
+function renderWhosIn(){
+  const ts=toStr(TODAY);
+  document.getElementById('whosGrid').innerHTML=TEAM.map((u,i)=>{
+    const req=requests.find(r=>r.userId===u.id&&r.start<=ts&&r.end>=ts);
+    const isOut=!!req;
+    const isHalf=req&&req.half&&req.half!=='full';
+    const [bg,tc]=avc(i);
+    let cls=isHalf?'halfday':isOut?'out':'in';
+    let dotCls=isHalf?'dot-half':isOut?'dot-out':'dot-in';
+    let status=isHalf?`Half day (${req.half})`:isOut?`Out — ${TYPE_CFG[req.type].label}`:'In office';
+    return `<div class="whos-card ${cls}">
+      <div style="width:28px;height:28px;border-radius:50%;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${ini(u.name)}</div>
+      <div><div class="whos-name">${u.name}</div><div class="whos-status">${status}</div></div>
+    </div>`;
+  }).join('');
 }
 
-function calMove(dir) {
-  calMonth += dir;
-  if (calMonth>11) { calMonth=0; calYear++; }
-  if (calMonth<0)  { calMonth=11; calYear--; }
+function renderOverlapWarnings(){
+  const ts=toStr(TODAY), we=toStr(addDays(TODAY,30));
+  // check each day in next 30 days
+  const warnings=[];
+  let d=new Date(TODAY);
+  for(let i=0;i<30;i++){
+    const ds=toStr(d);
+    const out=requests.filter(r=>r.start<=ds&&r.end>=ds);
+    if(out.length>=3){
+      warnings.push(`${fromStr(ds).toLocaleDateString('en-US',{month:'short',day:'numeric'})}: ${out.map(r=>r.userName).join(', ')} all out (${out.length} people)`);
+    }
+    d=addDays(d,1);
+  }
+  const el=document.getElementById('overlapWarn');
+  if(warnings.length){
+    document.getElementById('overlapItems').innerHTML=warnings.slice(0,5).map(w=>`<div class="overlap-item">⚠️ ${w}</div>`).join('');
+    el.classList.add('show');
+  } else el.classList.remove('show');
+}
+
+function renderReturnReminders(){
+  if(currentUser.role!=='admin'){ document.getElementById('returnBar').style.display='none'; return; }
+  const tomorrow=toStr(addDays(TODAY,1));
+  const returning=requests.filter(r=>r.end===toStr(TODAY)).map(r=>r.userName);
+  // people whose OOO ends today = back tomorrow
+  const el=document.getElementById('returnBar');
+  if(returning.length){
+    document.getElementById('returnItems').innerHTML=returning.map(n=>`<div class="return-item">👋 ${n} returns tomorrow</div>`).join('');
+    el.classList.add('show');
+  } else el.classList.remove('show');
+}
+
+function renderBurnoutRadar(){
+  if(currentUser.role!=='admin'){ document.getElementById('burnoutBar').style.display='none'; return; }
+  const today=TODAY, cutoff=new Date(today); cutoff.setDate(today.getDate()-90);
+  const cutoffStr=toStr(cutoff);
+  const flagged=TEAM.filter(u=>{
+    const recent=requests.filter(r=>r.userId===u.id&&r.start>=cutoffStr&&r.type!=='sick'&&r.type!=='conference');
+    return recent.length===0;
+  });
+  const el=document.getElementById('burnoutBar');
+  if(flagged.length){
+    document.getElementById('burnoutItems').innerHTML=flagged.map(u=>`<div class="burnout-item">🔥 <strong>${u.name}</strong> hasn't logged any time off in the last 90+ days — consider checking in.</div>`).join('');
+    el.classList.add('show');
+  } else el.classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════
+// CALENDAR
+// ═══════════════════════════════════════════════════
+function renderCalendar(){
+  const MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calLabel').textContent=MN[calMonth]+' '+calYear;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const ts=toStr(TODAY), total=Math.ceil((first+days)/7)*7;
+  let html='',dc=1;
+  for(let i=0;i<total;i++){
+    let d,om=false;
+    if(i<first){d=new Date(calYear,calMonth-1,new Date(calYear,calMonth,0).getDate()-first+i+1);om=true;}
+    else if(dc>days){d=new Date(calYear,calMonth+1,dc-days);dc++;om=true;}
+    else d=new Date(calYear,calMonth,dc++);
+    const ds=toStr(d), isT=ds===ts, hol=isHoliday(ds);
+    const evs=requests.filter(r=>r.start<=ds&&r.end>=ds);
+    html+=`<div class="cal-cell${om?' om':''}${isT?' today':''}${hol&&!om?' holiday':''}">`;
+    html+=`<div class="dn">${d.getDate()}</div>`;
+    if(hol&&!om) html+=`<div class="ev ev-holiday" title="${hol.name}">🇺🇸 ${hol.name}</div>`;
+    html+=evs.slice(0,2).map(r=>`<div class="ev ${TYPE_CFG[r.type].ev}" title="${r.userName}${r.half&&r.half!=='full'?' (½)':''}">${r.userName.split(' ')[0]}${r.half&&r.half!=='full'?' ½':''}</div>`).join('');
+    if(evs.length>2) html+=`<div style="font-size:8px;color:#aeaeb2">+${evs.length-2}</div>`;
+    html+='</div>';
+  }
+  document.getElementById('calGrid').innerHTML=html;
+}
+function calMove(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0) {calMonth=11;calYear--;}
   renderCalendar();
 }
-
-function setFilter(f, btn) {
-  listFilter = f;
+function setFilter(f,btn){
+  listFilter=f;
   document.querySelectorAll('.fp').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   renderUpcoming();
 }
-
-function renderUpcoming() {
-  const todayStr = toDateStr(TODAY);
-  let list = requests
-    .filter(r=>r.end>=todayStr && (listFilter==='all' || r.type===listFilter))
-    .sort((a,b)=>a.start.localeCompare(b.start));
-  const el = document.getElementById('upcomingList');
-  if (!list.length) { el.innerHTML='<div class="empty">No upcoming time off</div>'; return; }
-  el.innerHTML = list.map(r=>{
-    const cfg = TYPE_CFG[r.type];
-    const idx = userIndex(r.userId);
-    const [bg,tc] = avColor(idx<0?0:idx);
+function renderUpcoming(){
+  const ts=toStr(TODAY);
+  let list=requests.filter(r=>r.end>=ts&&(listFilter==='all'||r.type===listFilter)).sort((a,b)=>a.start.localeCompare(b.start));
+  const el=document.getElementById('upcomingList');
+  if(!list.length){el.innerHTML='<div class="empty">No upcoming time off</div>';return;}
+  el.innerHTML=list.map(r=>{
+    const cfg=TYPE_CFG[r.type],idx=uidx(r.userId),[bg,tc]=avc(idx<0?0:idx);
+    const half=r.half&&r.half!=='full'?` <span style="font-size:10px;background:#fff3e0;color:#7d4e00;padding:1px 5px;border-radius:6px">${r.half}</span>`:'';
     return `<div class="abs-item">
-      <div class="abs-av" style="background:${bg};color:${tc}">${initials(r.userName)}</div>
+      <div class="abs-av" style="background:${bg};color:${tc}">${ini(r.userName)}</div>
       <div class="abs-info">
-        <div class="abs-name">${r.userName}</div>
-        <div class="abs-date">${formatRange(r.start,r.end)}</div>
+        <div class="abs-name">${r.userName}${half}</div>
+        <div class="abs-date">${fmtRange(r.start,r.end)}</div>
       </div>
       <span class="badge" style="background:${cfg.bg};color:${cfg.tc}">${cfg.label}</span>
     </div>`;
   }).join('');
 }
 
-// ─── MY TIME OFF ─────────────────────────────────────────
-function renderMyTime() {
-  const myReqs = requests.filter(r=>r.userId===currentUser.id).sort((a,b)=>b.start.localeCompare(a.start));
-  const el = document.getElementById('myEntries');
-  if (!myReqs.length) { el.innerHTML='<div class="empty">No requests yet — click "Request time off" to add one.</div>'; return; }
-  el.innerHTML = myReqs.map(r=>{
-    const cfg = TYPE_CFG[r.type];
-    const days = dayCount(r.start, r.end);
+// ═══════════════════════════════════════════════════
+// MY TIME OFF
+// ═══════════════════════════════════════════════════
+function renderMyTime(){
+  const myR=requests.filter(r=>r.userId===currentUser.id).sort((a,b)=>b.start.localeCompare(a.start));
+  const el=document.getElementById('myEntries');
+  if(!myR.length){el.innerHTML='<div class="empty">No requests yet — click "Request time off" to add one.</div>';return;}
+  el.innerHTML=myR.map(r=>{
+    const cfg=TYPE_CFG[r.type], days=dayCount(r.start,r.end);
+    const halfLabel=r.half&&r.half!=='full'?` · ${r.half}`:'';
     return `<div class="entry">
       <div class="e-stripe" style="background:${cfg.stripe}"></div>
       <div class="e-info">
-        <div class="e-type">${cfg.label}</div>
-        <div class="e-date">${formatRange(r.start,r.end)} &middot; ${days} day${days!==1?'s':''}</div>
+        <div class="e-type">${cfg.label}${halfLabel}</div>
+        <div class="e-date">${fmtRange(r.start,r.end)} · ${days} day${days!==1?'s':''}</div>
       </div>
       <div class="e-acts">
-        <button class="btn-notify" onclick="triggerNotify('${r.id}')">&#9993; Notify</button>
-        <button class="btn-del" onclick="deleteRequest('${r.id}')" title="Delete">&#128465;</button>
+        <button class="btn-notify" onclick="triggerNotify('${r.id}')">✉ Notify</button>
+        <button class="btn-export" onclick="exportToCalendar('${r.id}')">📅 Export</button>
+        <button class="btn-del" onclick="deleteRequest('${r.id}')" title="Delete">🗑</button>
       </div>
     </div>`;
   }).join('');
 }
 
-// ─── MODAL ───────────────────────────────────────────────
-function openModal() {
-  const todayStr = toDateStr(TODAY);
-  document.getElementById('mStart').value = todayStr;
-  document.getElementById('mEnd').value   = todayStr;
-  document.getElementById('mType').value  = 'vacation';
-  document.getElementById('mNotify').checked = true;
-  document.getElementById('modalErr').style.display = 'none';
+// ═══════════════════════════════════════════════════
+// MODAL
+// ═══════════════════════════════════════════════════
+function openModal(prefillStart,prefillEnd){
+  const ts=toStr(TODAY);
+  document.getElementById('mStart').value=prefillStart||ts;
+  document.getElementById('mEnd').value  =prefillEnd||ts;
+  document.getElementById('mType').value ='vacation';
+  document.getElementById('mHalf').value ='full';
+  document.getElementById('mNotify').checked=true;
+  document.getElementById('modalErr').style.display='none';
+  document.getElementById('overlapModalWarn').style.display='none';
   document.getElementById('modalBg').classList.add('open');
 }
-function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); }
 
-function saveRequest() {
-  const type  = document.getElementById('mType').value;
-  const start = document.getElementById('mStart').value;
-  const end   = document.getElementById('mEnd').value;
-  const notify= document.getElementById('mNotify').checked;
-  const errEl = document.getElementById('modalErr');
-
-  if (!start || !end || end < start) {
-    errEl.style.display = 'block';
-    return;
+function checkOverlapLive(){
+  const s=document.getElementById('mStart').value;
+  const e=document.getElementById('mEnd').value;
+  const warnEl=document.getElementById('overlapModalWarn');
+  if(!s||!e||e<s){warnEl.style.display='none';return;}
+  // check how many others are out on any day in this range
+  let d=new Date(fromStr(s)), maxOut=0, maxDate='', maxNames=[];
+  while(toStr(d)<=e){
+    const ds=toStr(d);
+    const out=requests.filter(r=>r.userId!==currentUser.id&&r.start<=ds&&r.end>=ds);
+    if(out.length>maxOut){maxOut=out.length;maxDate=ds;maxNames=out.map(r=>r.userName);}
+    d=addDays(d,1);
   }
-  errEl.style.display = 'none';
+  if(maxOut>=2){
+    warnEl.textContent=`⚠️ Heads up — ${maxNames.join(', ')} ${maxOut===1?'is':'are'} also out around ${fromStr(maxDate).toLocaleDateString('en-US',{month:'short',day:'numeric'})}. Check with your team.`;
+    warnEl.style.display='block';
+    // also show AI suggestion
+    showAISuggestion(s,e);
+  } else {
+    warnEl.style.display='none';
+    document.getElementById('aiSuggestion').classList.remove('show');
+  }
+}
 
-  const req = {
-    id: 'r' + Date.now(),
-    userId:   currentUser.id,
-    userName: currentUser.name,
-    type, start, end,
-  };
+function showAISuggestion(s,e){
+  // find quieter dates nearby
+  const days=dayCount(s,e);
+  let bestStart=null, bestScore=999;
+  for(let offset=-14;offset<=14;offset++){
+    if(offset===0) continue;
+    const ns=toStr(addDays(fromStr(s),offset));
+    const ne=toStr(addDays(fromStr(e),offset));
+    let score=0;
+    let d=new Date(fromStr(ns));
+    while(toStr(d)<=ne){
+      const ds=toStr(d);
+      score+=requests.filter(r=>r.userId!==currentUser.id&&r.start<=ds&&r.end>=ds).length;
+      d=addDays(d,1);
+    }
+    if(score<bestScore){bestScore=score;bestStart=ns;aiSuggestedEnd=ne;}
+  }
+  if(bestStart&&bestScore<requests.filter(r=>r.userId!==currentUser.id&&r.start<=s&&r.end>=s).length*days){
+    aiSuggestedStart=bestStart;
+    document.getElementById('aiSugText').textContent=
+      `The team is quieter around ${fmtRange(bestStart,aiSuggestedEnd)} (${bestScore===0?'nobody else out':'fewer people out'}). Want to use these dates instead?`;
+    document.getElementById('aiSuggestion').classList.add('show');
+  }
+}
+
+function useSuggestedDates(){
+  if(aiSuggestedStart){
+    document.getElementById('mStart').value=aiSuggestedStart;
+    document.getElementById('mEnd').value=aiSuggestedEnd;
+    document.getElementById('aiSuggestion').classList.remove('show');
+    document.getElementById('overlapModalWarn').style.display='none';
+  }
+}
+
+function saveRequest(){
+  const type  =document.getElementById('mType').value;
+  const start =document.getElementById('mStart').value;
+  const end   =document.getElementById('mEnd').value;
+  const half  =document.getElementById('mHalf').value;
+  const notify=document.getElementById('mNotify').checked;
+  const errEl =document.getElementById('modalErr');
+  if(!start||!end||end<start){errEl.style.display='block';return;}
+  errEl.style.display='none';
+  const req={id:'r'+Date.now(),userId:currentUser.id,userName:currentUser.name,type,start,end,half};
   requests.push(req);
-  saveData();
+  saveAll();
   closeModal();
   renderDashboard();
-
-  if (notify) { pendingNotify = req; showNotify(req); }
-
-  // Switch to My Time Off tab
-  const mineBtn = document.querySelectorAll('.nav-tab')[1];
-  showPanel('mine', mineBtn);
+  if(notify){pendingNotify=req;showNotify(req);}
+  // switch to my time off
+  const mineBtn=document.querySelectorAll('.nav-tab')[1];
+  showPanel('Mine',mineBtn);
 }
 
-function deleteRequest(id) {
-  if (currentUser.role !== 'admin') {
-    const r = requests.find(x=>x.id===id);
-    if (!r || r.userId !== currentUser.id) return;
+function deleteRequest(id){
+  if(currentUser.role!=='admin'){
+    const r=requests.find(x=>x.id===id);
+    if(!r||r.userId!==currentUser.id) return;
   }
-  requests = requests.filter(x=>x.id!==id);
-  saveData();
+  requests=requests.filter(x=>x.id!==id);
+  saveAll();
   renderDashboard();
   renderMyTime();
-  if (document.getElementById('panelAdmin').classList.contains('show')) renderAdmin();
+  if(document.getElementById('panelAdmin').classList.contains('show')) renderAdmin();
 }
 
-// ─── NOTIFICATIONS ───────────────────────────────────────
-function showNotify(req) {
-  const cfg  = TYPE_CFG[req.type];
-  const days = dayCount(req.start, req.end);
-  document.getElementById('notifyMsg').textContent =
-    `${currentUser.name} has logged ${cfg.label.toLowerCase()} from ${formatRange(req.start,req.end)} (${days} day${days!==1?'s':''}). Click below to email the team.`;
+// ═══════════════════════════════════════════════════
+// EXPORT TO CALENDAR (.ics)
+// ═══════════════════════════════════════════════════
+function exportToCalendar(id){
+  const r=requests.find(x=>x.id===id);
+  if(!r) return;
+  const cfg=TYPE_CFG[r.type];
+  const fmtICS=s=>s.replace(/-/g,'');
+  // end date for ICS is exclusive (add 1 day)
+  const endExcl=toStr(addDays(fromStr(r.end),1));
+  const ics=`BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//spARK Labs//OOO//EN\r\nBEGIN:VEVENT\r\nUID:${r.id}@sparklabs\r\nDTSTART;VALUE=DATE:${fmtICS(r.start)}\r\nDTEND;VALUE=DATE:${fmtICS(endExcl)}\r\nSUMMARY:${cfg.label} - ${r.userName}\r\nDESCRIPTION:spARK Labs time off: ${cfg.label}${r.half&&r.half!=='full'?' ('+r.half+')':''}\r\nSTATUS:CONFIRMED\r\nEND:VEVENT\r\nEND:VCALENDAR`;
+  const blob=new Blob([ics],{type:'text/calendar'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=`sparklabs-ooo-${r.start}.ics`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ═══════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════
+function showNotify(req){
+  const cfg=TYPE_CFG[req.type], days=dayCount(req.start,req.end);
+  document.getElementById('notifyMsg').textContent=
+    `${currentUser.name} — ${cfg.label} from ${fmtRange(req.start,req.end)} (${days} day${days!==1?'s':''}).`;
   document.getElementById('notifyBar').classList.add('show');
 }
-function closeNotify() {
-  document.getElementById('notifyBar').classList.remove('show');
-  pendingNotify = null;
-}
-function triggerNotify(id) {
-  const req = requests.find(r=>r.id===id);
-  if (req) { pendingNotify=req; showNotify(req); }
-}
-function openNotifyEmail() {
-  if (!pendingNotify) return;
-  const r   = pendingNotify;
-  const cfg = TYPE_CFG[r.type];
-  const days = dayCount(r.start, r.end);
-  const sub  = encodeURIComponent(`[OOO] ${r.userName} – ${cfg.label} ${formatRange(r.start,r.end)}`);
-  const body = encodeURIComponent(
-    `Hi team,\n\n${r.userName} will be out of office:\n\nType: ${cfg.label}\nDates: ${formatRange(r.start,r.end)}\nDuration: ${days} day${days!==1?'s':''}\n\nPlease plan accordingly.\n\nSent via spARK Labs availability portal.`
-  );
-  window.location.href = `mailto:${TEAM_EMAILS}?subject=${sub}&body=${body}`;
+function closeNotify(){ document.getElementById('notifyBar').classList.remove('show'); pendingNotify=null; }
+function triggerNotify(id){ const r=requests.find(x=>x.id===id); if(r){pendingNotify=r;showNotify(r);} }
+function openNotifyEmail(){
+  if(!pendingNotify) return;
+  const r=pendingNotify, cfg=TYPE_CFG[r.type], days=dayCount(r.start,r.end);
+  const all=TEAM.map(t=>t.email).join(',');
+  const sub=encodeURIComponent(`[OOO] ${r.userName} – ${cfg.label} ${fmtRange(r.start,r.end)}`);
+  const body=encodeURIComponent(`Hi team,\n\n${r.userName} will be out of office:\n\nType: ${cfg.label}${r.half&&r.half!=='full'?' ('+r.half+')':''}\nDates: ${fmtRange(r.start,r.end)}\nDuration: ${days} day${days!==1?'s':''}\n\nPlease plan accordingly.\n\n— spARK Labs availability portal`);
+  window.location.href=`mailto:${all}?subject=${sub}&body=${body}`;
   closeNotify();
 }
 
-// ─── ADMIN ───────────────────────────────────────────────
-function showAdminTab(tab, btn) {
+// ═══════════════════════════════════════════════════
+// AI — NATURAL LANGUAGE
+// ═══════════════════════════════════════════════════
+async function runAI(){
+  const input=document.getElementById('aiInput').value.trim();
+  if(!input) return;
+  const resultEl=document.getElementById('aiResult');
+  resultEl.textContent='🤖 Thinking...';
+  resultEl.classList.add('show');
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        messages:[{role:'user',content:
+          `Today is ${toStr(TODAY)}. The user said: "${input}". 
+          Parse this as a time-off request. Reply ONLY with a JSON object like:
+          {"start":"YYYY-MM-DD","end":"YYYY-MM-DD","type":"vacation|sick|personal|conference","summary":"one sentence confirmation"}
+          If you cannot parse it, reply with {"error":"explanation"}.
+          Do not include any other text.`
+        }]
+      })
+    });
+    const data=await resp.json();
+    const text=data.content?.[0]?.text||'';
+    const clean=text.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    if(parsed.error){
+      resultEl.textContent=`❌ ${parsed.error}`;
+    } else {
+      resultEl.textContent=`✅ ${parsed.summary}`;
+      // pre-fill the modal
+      aiSuggestedStart=null;
+      openModal(parsed.start, parsed.end);
+      document.getElementById('mType').value=parsed.type||'vacation';
+      checkOverlapLive();
+    }
+  } catch(e){
+    // Fallback: simple local parser
+    const parsed=localParseNL(input);
+    if(parsed){
+      resultEl.textContent=`✅ ${parsed.summary}`;
+      openModal(parsed.start,parsed.end);
+      document.getElementById('mType').value=parsed.type;
+      checkOverlapLive();
+    } else {
+      resultEl.textContent='❌ Could not understand that. Try: "I need Friday off" or "vacation June 10-14"';
+    }
+  }
+}
+
+function localParseNL(input){
+  const lower=input.toLowerCase();
+  const today=new Date(TODAY);
+  const type=lower.includes('sick')?'sick':lower.includes('conference')||lower.includes('event')?'conference':lower.includes('personal')?'personal':'vacation';
+  // "next friday"
+  if(lower.includes('next friday')||lower.includes('this friday')){
+    const d=new Date(today); const dow=d.getDay(); const diff=lower.includes('next')?5+(7-dow):5-dow;
+    const fd=addDays(d,diff<0?diff+7:diff);
+    return {start:toStr(fd),end:toStr(fd),type,summary:`${TYPE_CFG[type].label} on ${fd.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'})}`};
+  }
+  // "next week"
+  if(lower.includes('next week')){
+    const mon=addDays(today,8-today.getDay()||7);
+    const fri=addDays(mon,4);
+    return {start:toStr(mon),end:toStr(fri),type,summary:`${Type_CFG[type]?.label||'Vacation'} next week (${fmtRange(toStr(mon),toStr(fri))})`};
+  }
+  // "tomorrow"
+  if(lower.includes('tomorrow')){
+    const tm=addDays(today,1);
+    return {start:toStr(tm),end:toStr(tm),type,summary:`${TYPE_CFG[type].label} tomorrow (${tm.toLocaleDateString('en-US',{month:'short',day:'numeric'})})`};
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════
+// BURNOUT RADAR
+// ═══════════════════════════════════════════════════
+// already in renderBurnoutRadar()
+
+// ═══════════════════════════════════════════════════
+// ADMIN
+// ═══════════════════════════════════════════════════
+function showAdminTab(tab,btn){
   document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.ap').forEach(p=>p.classList.remove('show'));
-  document.getElementById(tab==='team'?'apTeam':'apRequests').classList.add('show');
+  document.getElementById({team:'apTeam',requests:'apRequests',members:'apMembers'}[tab]).classList.add('show');
   renderAdmin();
 }
-
-function renderAdmin() {
-  const activeTab = document.querySelector('.atab.active');
-  if (!activeTab) return;
-  if (activeTab.textContent.includes('Team')) renderAdminTeam();
-  else renderAdminRequests();
+function renderAdmin(){
+  const at=document.querySelector('.atab.active');
+  if(!at) return;
+  const t=at.textContent.trim();
+  if(t.includes('Team'))    renderAdminTeam();
+  if(t.includes('All'))     renderAdminRequests();
+  if(t.includes('Manage'))  renderAdminMembers();
 }
-
-function renderAdminTeam() {
-  const todayStr = toDateStr(TODAY);
-  document.getElementById('apTeam').innerHTML = `
-    <div class="tbl-wrap"><table>
-      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status today</th></tr></thead>
-      <tbody>${TEAM.map((u,i)=>{
-        const out = requests.some(r=>r.userId===u.id && r.start<=todayStr && r.end>=todayStr);
-        const [bg,tc] = avColor(i);
-        return `<tr>
-          <td style="display:flex;align-items:center;gap:9px">
-            <div style="width:28px;height:28px;border-radius:50%;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${initials(u.name)}</div>
-            <strong>${u.name}</strong>
-          </td>
-          <td style="color:#6e6e73">${u.email}</td>
-          <td><span class="u-role ${u.role==='admin'?'role-mgr':'role-emp'}">${u.role==='admin'?'Admin':'Employee'}</span></td>
-          <td><span class="dot ${out?'dot-out':'dot-in'}"></span>${out?'Out of office':'In office'}</td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table></div>`;
+function renderAdminTeam(){
+  const ts=toStr(TODAY);
+  document.getElementById('apTeam').innerHTML=`<div class="tbl-wrap"><table>
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status today</th></tr></thead>
+    <tbody>${TEAM.map((u,i)=>{
+      const req=requests.find(r=>r.userId===u.id&&r.start<=ts&&r.end>=ts);
+      const out=!!req; const half=req&&req.half&&req.half!=='full';
+      const [bg,tc]=avc(i);
+      return `<tr>
+        <td style="display:flex;align-items:center;gap:9px">
+          <div style="width:28px;height:28px;border-radius:50%;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${ini(u.name)}</div>
+          <strong>${u.name}</strong></td>
+        <td style="color:#6e6e73">${u.email}</td>
+        <td><span class="u-role ${u.role==='admin'?'role-mgr':'role-emp'}">${u.role==='admin'?'Admin':'Employee'}</span></td>
+        <td><span class="dot ${out?'dot-out':'dot-in'}" style="width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;background:${out?(half?'#F5C842':'#ff3b30'):'#34c759'}"></span>${half?'Half day':out?'Out of office':'In office'}</td>
+      </tr>`;
+    }).join('')}</tbody></table></div>`;
 }
-
-function renderAdminRequests() {
-  const sorted = [...requests].sort((a,b)=>b.start.localeCompare(a.start));
-  const opts = {month:'short',day:'numeric'};
-  document.getElementById('apRequests').innerHTML = sorted.length
-    ? `<div class="tbl-wrap"><table>
-        <thead><tr><th>Employee</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th></th></tr></thead>
+function renderAdminRequests(){
+  const sorted=[...requests].sort((a,b)=>b.start.localeCompare(a.start));
+  const o={month:'short',day:'numeric'};
+  document.getElementById('apRequests').innerHTML=sorted.length
+    ?`<div class="tbl-wrap"><table>
+        <thead><tr><th>Employee</th><th>Type</th><th>Start</th><th>End</th><th>Days</th><th>Half day</th><th></th></tr></thead>
         <tbody>${sorted.map(r=>{
-          const cfg  = TYPE_CFG[r.type];
-          const days = dayCount(r.start, r.end);
+          const cfg=TYPE_CFG[r.type],days=dayCount(r.start,r.end);
           return `<tr>
             <td>${r.userName}</td>
             <td><span class="badge" style="background:${cfg.bg};color:${cfg.tc}">${cfg.label}</span></td>
-            <td>${fromDateStr(r.start).toLocaleDateString('en-US',opts)}</td>
-            <td>${fromDateStr(r.end).toLocaleDateString('en-US',opts)}</td>
+            <td>${fromStr(r.start).toLocaleDateString('en-US',o)}</td>
+            <td>${fromStr(r.end).toLocaleDateString('en-US',o)}</td>
             <td>${days}</td>
-            <td><button class="tbl-del" onclick="deleteRequest('${r.id}')" title="Delete">&#128465;</button></td>
+            <td>${r.half&&r.half!=='full'?r.half:'—'}</td>
+            <td><button class="tbl-del" onclick="deleteRequest('${r.id}')">🗑</button></td>
           </tr>`;
-        }).join('')}</tbody>
-      </table></div>`
-    : '<div class="empty">No requests yet.</div>';
+        }).join('')}</tbody></table></div>`
+    :'<div class="empty">No requests yet.</div>';
+}
+function renderAdminMembers(){
+  document.getElementById('apMembers').innerHTML=`
+    <div style="margin-bottom:1rem">
+      <button class="btn-add" onclick="openMemberModal()">+ Add team member</button>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead>
+      <tbody>${TEAM.map((u,i)=>{
+        const [bg,tc]=avc(i);
+        return `<tr>
+          <td style="display:flex;align-items:center;gap:9px">
+            <div style="width:26px;height:26px;border-radius:50%;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${ini(u.name)}</div>
+            ${u.name}</td>
+          <td style="color:#6e6e73">${u.email}</td>
+          <td><span class="u-role ${u.role==='admin'?'role-mgr':'role-emp'}">${u.role==='admin'?'Admin':'Employee'}</span></td>
+          <td>${u.id!==currentUser.id?`<button class="tbl-del" onclick="removeMember('${u.id}')">🗑</button>`:'<span style="color:#aeaeb2;font-size:12px">you</span>'}</td>
+        </tr>`;
+      }).join('')}</tbody></table></div>`;
 }
 
-// ─── KEYBOARD ────────────────────────────────────────────
-document.getElementById('inEmail').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('inPass').focus(); });
-document.getElementById('inPass').addEventListener('keydown',  e=>{ if(e.key==='Enter') doLogin(); });
+// ═══════════════════════════════════════════════════
+// MANAGE MEMBERS
+// ═══════════════════════════════════════════════════
+function openMemberModal(){
+  document.getElementById('mName').value='';
+  document.getElementById('mEmail').value='';
+  document.getElementById('mPass').value='';
+  document.getElementById('mRole').value='employee';
+  document.getElementById('memberErr').style.display='none';
+  document.getElementById('memberModalBg').classList.add('open');
+}
+function closeMemberModal(){ document.getElementById('memberModalBg').classList.remove('open'); }
+function saveMember(){
+  const name =document.getElementById('mName').value.trim();
+  const email=document.getElementById('mEmail').value.trim();
+  const pass =document.getElementById('mPass').value.trim();
+  const role =document.getElementById('mRole').value;
+  const errEl=document.getElementById('memberErr');
+  if(!name||!email||!pass){ errEl.textContent='Please fill in all fields.'; errEl.style.display='block'; return; }
+  if(TEAM.find(t=>t.email.toLowerCase()===email.toLowerCase())){ errEl.textContent='That email already exists.'; errEl.style.display='block'; return; }
+  const id=name.toLowerCase().replace(/\s+/g,'')+Date.now();
+  TEAM.push({id,name,email,pass,role});
+  saveAll();
+  closeMemberModal();
+  renderAdminMembers();
+}
+function removeMember(id){
+  if(!confirm('Remove this team member?')) return;
+  TEAM=TEAM.filter(t=>t.id!==id);
+  requests=requests.filter(r=>r.userId!==id);
+  saveAll();
+  renderAdmin();
+  renderDashboard();
+}
 
-// ─── INIT ────────────────────────────────────────────────
-document.getElementById('loginPage').style.display = 'flex';
-document.getElementById('appPage').style.display   = 'none';
+// ═══════════════════════════════════════════════════
+// KEYBOARD + INIT
+// ═══════════════════════════════════════════════════
+document.getElementById('inEmail').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('inPass').focus();});
+document.getElementById('inPass').addEventListener('keydown', e=>{if(e.key==='Enter')doLogin();});
+document.getElementById('aiInput').addEventListener('keydown',e=>{if(e.key==='Enter')runAI();});
+
+document.getElementById('loginPage').style.display='flex';
+document.getElementById('appPage').style.display='none';
 </script>
 </body>
 </html>
