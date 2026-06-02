@@ -173,7 +173,7 @@ tr:hover td{background:#fafafa;}
     <div class="login-err" id="loginErr"></div>
     <div class="field">
       <label>Work email</label>
-      <input type="email" id="inEmail" placeholder="you@sp-ark-labs.com" autocomplete="username"/>
+      <input type="email" id="inEmail" placeholder="e.g. deeke@sp-ark-labs.com" autocomplete="username"/>
     </div>
     <div class="field">
       <label>Password</label>
@@ -181,15 +181,15 @@ tr:hover td{background:#fafafa;}
     </div>
     <button class="btn-login" onclick="doLogin()">Sign in &rarr;</button>
     <div class="login-hint">
-      <strong>Your login is your first name:</strong><br>
-      edwin@sp-ark-labs.com &nbsp;/&nbsp; edwin123<br>
-      cassandra@sp-ark-labs.com &nbsp;/&nbsp; cassandra123<br>
-      caitlin@sp-ark-labs.com &nbsp;/&nbsp; caitlin123<br>
-      becca@sp-ark-labs.com &nbsp;/&nbsp; becca123<br>
-      cassidy@sp-ark-labs.com &nbsp;/&nbsp; cassidy123<br>
-      larry@sp-ark-labs.com &nbsp;/&nbsp; larry123<br>
-      jen@sp-ark-labs.com &nbsp;/&nbsp; jen123<br>
-      ed@sp-ark-labs.com &nbsp;/&nbsp; ed123
+      <strong>Your login:</strong><br>
+      deeke@sp-ark-labs.com &nbsp;/&nbsp; edwin123<br>
+      BernardC@sp-ark-labs.com &nbsp;/&nbsp; becca123<br>
+      BrownR@sp-ark-labs.com &nbsp;/&nbsp; cassandra123<br>
+      caitlinr@sp-ark-labs.com &nbsp;/&nbsp; caitlin123<br>
+      CookC@sp-ark-labs.com &nbsp;/&nbsp; cassidy123<br>
+      DoyleL@sp-ark-labs.com &nbsp;/&nbsp; larry123<br>
+      friesenj@sp-ark-labs.com &nbsp;/&nbsp; jennifer123<br>
+      KangE@sp-ark-labs.com &nbsp;/&nbsp; ed123
     </div>
   </div>
 </div>
@@ -309,14 +309,14 @@ tr:hover td{background:#fafafa;}
 <script>
 // ─── DATA ───────────────────────────────────────────────
 const TEAM = [
-  {id:'edwin',    name:'Edwin',     email:'edwin@sp-ark-labs.com',    pass:'edwin123',    role:'admin'},
-  {id:'cassandra',name:'Cassandra', email:'cassandra@sp-ark-labs.com',pass:'cassandra123',role:'employee'},
-  {id:'caitlin',  name:'Caitlin',   email:'caitlin@sp-ark-labs.com',  pass:'caitlin123',  role:'employee'},
-  {id:'becca',    name:'Becca',     email:'becca@sp-ark-labs.com',    pass:'becca123',    role:'admin'},
-  {id:'cassidy',  name:'Cassidy',   email:'cassidy@sp-ark-labs.com',  pass:'cassidy123',  role:'employee'},
-  {id:'larry',    name:'Larry',     email:'larry@sp-ark-labs.com',    pass:'larry123',    role:'employee'},
-  {id:'jen',      name:'Jen',       email:'jen@sp-ark-labs.com',      pass:'jen123',      role:'employee'},
-  {id:'ed',       name:'Ed',        email:'ed@sp-ark-labs.com',       pass:'ed123',       role:'employee'},
+  {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',    pass:'edwin123',    role:'admin'},
+  {id:'cassandra',name:'Cassandra', email:'BrownR@sp-ark-labs.com',   pass:'cassandra123',role:'employee'},
+  {id:'caitlin',  name:'Caitlin',   email:'caitlinr@sp-ark-labs.com', pass:'caitlin123',  role:'employee'},
+  {id:'becca',    name:'Becca',     email:'BernardC@sp-ark-labs.com', pass:'becca123',    role:'admin'},
+  {id:'cassidy',  name:'Cassidy',   email:'CookC@sp-ark-labs.com',    pass:'cassidy123',  role:'employee'},
+  {id:'larry',    name:'Larry',     email:'DoyleL@sp-ark-labs.com',   pass:'larry123',    role:'employee'},
+  {id:'jennifer', name:'Jennifer',  email:'friesenj@sp-ark-labs.com', pass:'jennifer123', role:'employee'},
+  {id:'ed',       name:'Ed',        email:'KangE@sp-ark-labs.com',    pass:'ed123',       role:'employee'},
 ];
 
 const TEAM_EMAILS = TEAM.map(t=>t.email).join(',');
@@ -369,7 +369,7 @@ function dayCount(s, e) {
 
 // ─── AUTH ────────────────────────────────────────────────
 function doLogin() {
-  const email = document.getElementById('inEmail').value.trim().toLowerCase();
+  const email = document.getElementById('inEmail').value.trim();
   const pass  = document.getElementById('inPass').value.trim();
   const errEl = document.getElementById('loginErr');
 
@@ -379,10 +379,10 @@ function doLogin() {
     return;
   }
 
-  const user = TEAM.find(t => t.email === email && t.pass === pass);
+  const user = TEAM.find(t => t.email.toLowerCase() === email.toLowerCase() && t.pass === pass);
 
   if (!user) {
-    errEl.textContent = 'Email or password incorrect. Try: firstname@sp-ark-labs.com and firstname123';
+    errEl.textContent = 'Email or password incorrect. Check the login list below — passwords are firstname123.';
     errEl.style.display = 'block';
     return;
   }
@@ -452,7 +452,7 @@ function renderStats() {
   document.getElementById('statsRow').innerHTML = [
     {l:'Out today',   v:outToday, s:'team members'},
     {l:'Out this week',v:outWeek, s:'incl. today'},
-    {l:'Upcoming',    v:upcoming, s:'future requests'},
+    {l:'Upcoming',    v:upcoming, s:'time off logged'},
     {l:'Team size',   v:TEAM.length, s:'members total'},
   ].map(x=>`<div class="stat"><div class="stat-l">${x.l}</div><div class="stat-v">${x.v}</div><div class="stat-s">${x.s}</div></div>`).join('');
 }
