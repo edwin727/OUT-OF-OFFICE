@@ -79,12 +79,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .overlap-title{font-size:13px;font-weight:700;color:#92400e;margin-bottom:6px;}
 .overlap-item{font-size:12px;color:#92400e;margin-bottom:3px;}
 
-/* BURNOUT RADAR */
-.burnout-bar{background:#fff;border-radius:14px;padding:1.1rem;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:1.25rem;display:none;}
-.burnout-bar.show{display:block;}
-.burnout-title{font-size:13px;font-weight:700;margin-bottom:10px;color:#dc2626;display:flex;align-items:center;gap:6px;}
-.burnout-items{display:flex;flex-direction:column;gap:6px;}
-.burnout-item{font-size:12px;color:#7f1d1d;background:#fef2f2;border-radius:8px;padding:8px 12px;}
+
+
 
 /* RETURN REMINDERS */
 .return-bar{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:12px 16px;margin-bottom:1rem;display:none;}
@@ -258,9 +254,9 @@ tr:hover td{background:#fafafa;}
   .whos-title{font-size:12px;}
   .whos-name{font-size:11px;}
   .whos-status{font-size:9px;}
-  .overlap-warn,.return-bar,.burnout-bar{padding:10px 12px;}
-  .overlap-title,.return-title,.burnout-title{font-size:12px;}
-  .overlap-item,.return-item,.burnout-item{font-size:11px;}
+  .overlap-warn,.return-bar,
+  .overlap-title,.return-title,
+  .overlap-item,.return-item,
   .admin-tabs{gap:3px;}
   .atab{font-size:11px;padding:5px 10px;}
   table{font-size:11px;}
@@ -344,12 +340,6 @@ tr:hover td{background:#fafafa;}
     <div class="overlap-warn" id="overlapWarn">
       <div class="overlap-title">⚠️ Staffing overlap alerts</div>
       <div id="overlapItems"></div>
-    </div>
-
-    <!-- BURNOUT RADAR (admin only) -->
-    <div class="burnout-bar" id="burnoutBar">
-      <div class="burnout-title">🔥 Burnout radar</div>
-      <div class="burnout-items" id="burnoutItems"></div>
     </div>
 
     <div class="two-col">
@@ -642,7 +632,7 @@ function showPanel(name,btn){
 // ═══════════════════════════════════════════════════
 function renderDashboard(){
   renderStats(); renderWhosIn(); renderCalendar(); renderUpcoming();
-  renderOverlapWarnings(); renderReturnReminders(); renderBurnoutRadar();
+  renderOverlapWarnings(); renderReturnReminders();
 }
 
 function renderStats(){
@@ -707,20 +697,7 @@ function renderReturnReminders(){
   } else el.classList.remove('show');
 }
 
-function renderBurnoutRadar(){
-  if(currentUser.role!=='admin'){ document.getElementById('burnoutBar').style.display='none'; return; }
-  const today=TODAY, cutoff=new Date(today); cutoff.setDate(today.getDate()-90);
-  const cutoffStr=toStr(cutoff);
-  const flagged=TEAM.filter(u=>{
-    const recent=requests.filter(r=>r.userId===u.id&&r.start>=cutoffStr&&r.type!=='sick'&&r.type!=='conference');
-    return recent.length===0;
-  });
-  const el=document.getElementById('burnoutBar');
-  if(flagged.length){
-    document.getElementById('burnoutItems').innerHTML=flagged.map(u=>`<div class="burnout-item">🔥 <strong>${u.name}</strong> hasn't logged any time off in the last 90+ days — consider checking in.</div>`).join('');
-    el.classList.add('show');
-  } else el.classList.remove('show');
-}
+
 
 // ═══════════════════════════════════════════════════
 // CALENDAR
@@ -1026,12 +1003,6 @@ function localParseNL(input){
   }
   return null;
 }
-
-// ═══════════════════════════════════════════════════
-// BURNOUT RADAR
-// ═══════════════════════════════════════════════════
-// already in renderBurnoutRadar()
-
 // ═══════════════════════════════════════════════════
 // ADMIN
 // ═══════════════════════════════════════════════════
