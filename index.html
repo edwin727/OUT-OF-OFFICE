@@ -480,14 +480,14 @@ tr:hover td{background:#fafafa;}
 // DATA
 // ═══════════════════════════════════════════════════
 const DEFAULT_TEAM = [
-  {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',     pass:'edwin123',    role:'admin'},
-  {id:'cassandra',name:'Cassandra', email:'bernardc@sp-ark-labs.com',  pass:'cassandra123',role:'employee'},
-  {id:'caitlin',  name:'Caitlin',   email:'caitlinr@sp-ark-labs.com',  pass:'caitlin123',  role:'employee'},
-  {id:'becca',    name:'Rebecca',   email:'brownr@sp-ark-labs.com',    pass:'becca123',    role:'admin'},
-  {id:'cassidy',  name:'Cassidy',   email:'CookC@sp-ark-labs.com',     pass:'cassidy123',  role:'employee'},
-  {id:'larry',    name:'Larry',     email:'DoyleL@sp-ark-labs.com',    pass:'larry123',    role:'employee'},
-  {id:'jennifer', name:'Jennifer',  email:'friesenj@sp-ark-labs.com',  pass:'jennifer123', role:'employee'},
-  {id:'ed',       name:'Ed',        email:'KangE@sp-ark-labs.com',     pass:'ed123',       role:'employee'},
+  {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',      pass:'edwin123',    role:'admin'},
+  {id:'cassandra',name:'Cassandra', email:'bernardc@sp-ark-labs.com',   pass:'cassandra123',role:'employee'},
+  {id:'caitlin',  name:'Caitlin',   email:'caitlinr@sp-ark-labs.com',   pass:'caitlin123',  role:'employee'},
+  {id:'rebecca',  name:'Rebecca',   email:'brownr@sp-ark-labs.com',     pass:'becca123',    role:'admin'},
+  {id:'cassidy',  name:'Cassidy',   email:'CookC@sp-ark-labs.com',      pass:'cassidy123',  role:'employee'},
+  {id:'larry',    name:'Larry',     email:'DoyleL@sp-ark-labs.com',     pass:'larry123',    role:'employee'},
+  {id:'jennifer', name:'Jennifer',  email:'friesenj@sp-ark-labs.com',   pass:'jennifer123', role:'employee'},
+  {id:'ed',       name:'Ed',        email:'KangE@sp-ark-labs.com',      pass:'ed123',       role:'employee'},
 ];
 
 const TYPE_CFG = {
@@ -576,7 +576,8 @@ async function saveAll() {
         headers: {
           'Content-Type': 'application/json',
           'X-Master-Key': API_KEY,
-          'X-Bin-Versioning': 'false'
+          'X-Bin-Versioning': 'false',
+          'X-Bin-Private': 'false'
         },
         body: payload
       });
@@ -605,7 +606,7 @@ async function loadAll() {
       headers: { 
         'X-Master-Key': API_KEY,
         'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache'
+        'X-Bin-Private': 'false'
       },
       cache: 'no-store'
     });
