@@ -335,7 +335,9 @@ tr:hover td{background:#fafafa;}
 
     <!-- WHO'S IN TODAY -->
     <div class="whos-in">
-      <div class="whos-title">👥 Who's in today</div>
+      <div class="whos-title">👥 Who's in today 
+  <button onclick="manualRefresh()" id="refreshBtn" style="margin-left:auto;background:none;border:1.5px solid var(--border);border-radius:8px;padding:4px 10px;font-size:11px;color:var(--sub);cursor:pointer;font-weight:600;">↻ Refresh</button>
+</div>
       <div class="whos-grid" id="whosGrid"></div>
     </div>
 
@@ -479,9 +481,9 @@ tr:hover td{background:#fafafa;}
 // ═══════════════════════════════════════════════════
 const DEFAULT_TEAM = [
   {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',     pass:'edwin123',    role:'admin'},
-  {id:'cassandra',name:'Cassandra', email:'BrownR@sp-ark-labs.com',    pass:'cassandra123',role:'employee'},
+  {id:'cassandra',name:'Cassandra', email:'bernardc@sp-ark-labs.com',  pass:'cassandra123',role:'employee'},
   {id:'caitlin',  name:'Caitlin',   email:'caitlinr@sp-ark-labs.com',  pass:'caitlin123',  role:'employee'},
-  {id:'becca',    name:'Becca',     email:'BernardC@sp-ark-labs.com',  pass:'becca123',    role:'admin'},
+  {id:'becca',    name:'Rebecca',   email:'brownr@sp-ark-labs.com',    pass:'becca123',    role:'admin'},
   {id:'cassidy',  name:'Cassidy',   email:'CookC@sp-ark-labs.com',     pass:'cassidy123',  role:'employee'},
   {id:'larry',    name:'Larry',     email:'DoyleL@sp-ark-labs.com',    pass:'larry123',    role:'employee'},
   {id:'jennifer', name:'Jennifer',  email:'friesenj@sp-ark-labs.com',  pass:'jennifer123', role:'employee'},
@@ -500,26 +502,43 @@ const AV_COLORS = [
   ['#e1f5ee','#085041'],['#fff3e0','#7d4e00'],['#fce4ec','#880e4f'],['#e8f5e9','#1b5e20']
 ];
 
-// US Federal Holidays (month is 0-indexed)
+// US Federal Holidays — properly calculated
+function getNthWeekday(year, month, weekday, n) {
+  if (n === -1) {
+    const last = new Date(year, month+1, 0);
+    while (last.getDay() !== weekday) last.setDate(last.getDate()-1);
+    return last;
+  }
+  const d = new Date(year, month, 1); let count = 0;
+  while (d.getMonth() === month) {
+    if (d.getDay() === weekday) { count++; if (count === n) return new Date(d); }
+    d.setDate(d.getDate()+1);
+  }
+  return null;
+}
+function pad(n){ return String(n).padStart(2,'0'); }
+function dateStr(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
 function getHolidays(year) {
-  return [
-    {date:`${year}-01-01`,name:"New Year's Day"},
-    {date:`${year}-01-20`,name:'MLK Day'},
-    {date:`${year}-02-17`,name:"Presidents' Day"},
-    {date:`${year}-05-26`,name:'Memorial Day'},
-    {date:`${year}-06-19`,name:'Juneteenth'},
-    {date:`${year}-07-04`,name:'Independence Day'},
-    {date:`${year}-09-01`,name:'Labor Day'},
-    {date:`${year}-10-13`,name:'Columbus Day'},
-    {date:`${year}-11-11`,name:'Veterans Day'},
-    {date:`${year}-11-27`,name:'Thanksgiving'},
-    {date:`${year}-12-25`,name:'Christmas Day'},
-    // next year too for calendar nav
-    {date:`${year+1}-01-01`,name:"New Year's Day"},
-    {date:`${year+1}-07-04`,name:'Independence Day'},
-    {date:`${year+1}-11-26`,name:'Thanksgiving'},
-    {date:`${year+1}-12-25`,name:'Christmas Day'},
-  ];
+  const h = [];
+  // Fixed
+  h.push({date:`${year}-01-01`,name:"New Year's Day"});
+  h.push({date:`${year}-06-19`,name:'Juneteenth'});
+  h.push({date:`${year}-07-04`,name:'Independence Day'});
+  h.push({date:`${year}-11-11`,name:"Veterans Day"});
+  h.push({date:`${year}-12-25`,name:'Christmas Day'});
+  // Floating — 3rd Monday Jan (MLK)
+  const mlk=getNthWeekday(year,0,1,3);   if(mlk) h.push({date:dateStr(mlk),name:'MLK Day'});
+  // 3rd Monday Feb (Presidents)
+  const pres=getNthWeekday(year,1,1,3);  if(pres) h.push({date:dateStr(pres),name:"Presidents' Day"});
+  // Last Monday May (Memorial)
+  const mem=getNthWeekday(year,4,1,-1);  if(mem) h.push({date:dateStr(mem),name:'Memorial Day'});
+  // 1st Monday Sep (Labor)
+  const lab=getNthWeekday(year,8,1,1);   if(lab) h.push({date:dateStr(lab),name:'Labor Day'});
+  // 2nd Monday Oct (Columbus)
+  const col=getNthWeekday(year,9,1,2);   if(col) h.push({date:dateStr(col),name:'Columbus Day'});
+  // 4th Thursday Nov (Thanksgiving)
+  const tg=getNthWeekday(year,10,4,4);   if(tg) h.push({date:dateStr(tg),name:'Thanksgiving'});
+  return h;
 }
 
 // ═══════════════════════════════════════════════════
@@ -537,7 +556,7 @@ let aiSuggestedEnd   = null;
 
 const TODAY = new Date();
 TODAY.setHours(0,0,0,0);
-const HOLIDAYS = getHolidays(TODAY.getFullYear());
+const HOLIDAYS = [...getHolidays(TODAY.getFullYear()), ...getHolidays(TODAY.getFullYear()+1)];
 
 // ═══════════════════════════════════════════════════
 // SHARED STORAGE — JSONBin.io (syncs across all users/devices)
@@ -546,20 +565,27 @@ const BIN_URL = 'https://api.jsonbin.io/v3/b/6a202efeda38895dfe81168a';
 const API_KEY = '$2a$10$xSZm1lccFYQSp7MKWgsLyOyOL1Ksf0O3c.Vt5fBRNQ7QKQdlqGY/q';
 
 async function saveAll() {
-  try {
-    await fetch(BIN_URL, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': API_KEY,
-        'X-Bin-Versioning': 'false'
-      },
-      body: JSON.stringify({ requests })
-    });
-  } catch(e) {
-    // fallback to localStorage if offline
-    try { localStorage.setItem('sl_requests_backup', JSON.stringify(requests)); } catch(e2) {}
-    console.error('Save failed:', e);
+  const payload = JSON.stringify({ requests });
+  // Always save backup locally first
+  try { localStorage.setItem('sl_requests_backup', JSON.stringify(requests)); } catch(e2) {}
+  
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      const resp = await fetch(BIN_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': API_KEY,
+          'X-Bin-Versioning': 'false'
+        },
+        body: payload
+      });
+      if (!resp.ok) throw new Error('Save failed: ' + resp.status);
+      return; // success
+    } catch(e) {
+      if (attempt === 2) console.warn('Save to cloud failed after 2 attempts:', e.message);
+      else await new Promise(r => setTimeout(r, 1000)); // wait 1s before retry
+    }
   }
 }
 
@@ -575,18 +601,26 @@ async function loadAll() {
 
   try {
     const resp = await fetch(BIN_URL + '/latest', {
-      headers: { 'X-Master-Key': API_KEY }
+      method: 'GET',
+      headers: { 
+        'X-Master-Key': API_KEY,
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      },
+      cache: 'no-store'
     });
-    if (!resp.ok) throw new Error('Fetch failed');
+    if (!resp.ok) throw new Error('Fetch failed: ' + resp.status);
     const data = await resp.json();
-    requests = data.record?.requests || [];
+    requests = Array.isArray(data.record?.requests) ? data.record.requests : [];
+    // Update backup whenever we successfully load
+    try { localStorage.setItem('sl_requests_backup', JSON.stringify(requests)); } catch(e2) {}
   } catch(e) {
     // fallback to localStorage backup if offline
     try {
       const backup = localStorage.getItem('sl_requests_backup');
       requests = backup ? JSON.parse(backup) : [];
     } catch(e2) { requests = []; }
-    console.error('Load failed:', e);
+    console.warn('Using offline backup:', e.message);
   }
 }
 
@@ -687,6 +721,16 @@ function showPanel(name,btn){
 // ═══════════════════════════════════════════════════
 // DASHBOARD
 // ═══════════════════════════════════════════════════
+async function manualRefresh(){
+  const btn=document.getElementById('refreshBtn');
+  if(btn){btn.textContent='↻ Loading...';btn.disabled=true;}
+  await loadAll();
+  renderDashboard();
+  if(document.getElementById('panelMine').classList.contains('show')) renderMyTime();
+  if(document.getElementById('panelAdmin').classList.contains('show')) renderAdmin();
+  if(btn){btn.textContent='↻ Refresh';btn.disabled=false;}
+}
+
 function showLoading(msg='Loading team data...'){
   const el=document.getElementById('loadingBar');
   if(el){el.textContent=msg;el.style.display='block';}
@@ -1283,7 +1327,7 @@ setInterval(async () => {
       if (document.getElementById('panelAdmin').classList.contains('show')) renderAdmin();
     }
   }
-}, 60000);
+}, 30000); // refresh every 30s
 </script>
 </body>
 </html>
