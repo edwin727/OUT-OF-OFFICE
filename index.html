@@ -595,7 +595,7 @@ async function loadAll() {
 
   // Load shared requests from Firebase
   try {
-    const resp = await fetch(FB_URL + '/requests.json?orderBy=\"$key\"', {
+    const resp = await fetch(FB_URL + '/requests.json', {
       method: 'GET',
       cache: 'no-store',
       headers: { 'Cache-Control': 'no-cache' }
