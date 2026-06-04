@@ -400,7 +400,7 @@ tr:hover td{background:#fafafa;}
 
     <div class="notify-bar" id="notifyBar">
       <div class="nb-text"><strong>Notify your team?</strong> <span id="notifyMsg"></span><br>
-        <span class="nb-link" onclick="openNotifyEmail()">✉ Open email to team</span>
+        <span class="nb-link" onclick="openNotifyEmail()">📅 Send to team + add to calendars</span>
       </div>
       <button class="nb-close" onclick="closeNotify()">&#215;</button>
     </div>
@@ -1100,19 +1100,84 @@ function showCalendarPicker(webLink, r){
 function showNotify(req){
   const cfg=TYPE_CFG[req.type], days=dayCount(req.start,req.end);
   document.getElementById('notifyMsg').textContent=
-    `${currentUser.name} — ${cfg.label} from ${fmtRange(req.start,req.end)} (${days} day${days!==1?'s':''}).`;
+    `${currentUser.name} — ${cfg.label} from ${fmtRange(req.start,req.end)} (${days} day${days!==1?'s':''}). Click below to email the team and add this to everyone's calendar.`;
   document.getElementById('notifyBar').classList.add('show');
 }
 function closeNotify(){ document.getElementById('notifyBar').classList.remove('show'); pendingNotify=null; }
 function triggerNotify(id){ const r=requests.find(x=>x.id===id); if(r){pendingNotify=r;showNotify(r);} }
+function buildOOOInvite(r){
+  const cfg=TYPE_CFG[r.type];
+  const pad=n=>String(n).padStart(2,'0');
+  const fmtICS=s=>s.replace(/-/g,'');
+  // All-day event: DTEND is exclusive so add 1 day to the end date
+  const endExcl=toStr(addDays(fromStr(r.end),1));
+  const now=new Date();
+  const stamp=now.getUTCFullYear()+pad(now.getUTCMonth()+1)+pad(now.getUTCDate())+'T'+pad(now.getUTCHours())+pad(now.getUTCMinutes())+pad(now.getUTCSeconds())+'Z';
+  const organizer=TEAM.find(t=>t.id===r.userId);
+  const orgEmail=organizer?organizer.email:'noreply@sp-ark-labs.com';
+  // Attendees = whole team
+  const attendees=TEAM.map(t=>`ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=${t.name}:mailto:${t.email}`).join('\r\n');
+  const half=r.half&&r.half!=='full'?' ('+r.half+')':'';
+  const ics=[
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//spARK Labs//OOO Portal//EN',
+    'METHOD:REQUEST',
+    'CALSCALE:GREGORIAN',
+    'BEGIN:VEVENT',
+    'UID:'+r.id+'@sparklabs-ooo',
+    'DTSTAMP:'+stamp,
+    'DTSTART;VALUE=DATE:'+fmtICS(r.start),
+    'DTEND;VALUE=DATE:'+fmtICS(endExcl),
+    'SUMMARY:'+r.userName+' - Out of Office',
+    'DESCRIPTION:'+r.userName+' is out of office ('+cfg.label+half+') from '+fmtRange(r.start,r.end)+'. Logged via the spARK Labs availability portal.',
+    'ORGANIZER;CN='+r.userName+':mailto:'+orgEmail,
+    attendees,
+    'STATUS:CONFIRMED',
+    'TRANSP:OPAQUE',
+    'X-MICROSOFT-CDO-BUSYSTATUS:OOF',
+    'X-MICROSOFT-CDO-ALLDAYEVENT:TRUE',
+    'SEQUENCE:0',
+    'BEGIN:VALARM',
+    'TRIGGER:-P1D',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Reminder',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  return ics;
+}
+
+function downloadInvite(r){
+  const ics=buildOOOInvite(r);
+  const blob=new Blob([ics],{type:'text/calendar;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`${r.userName.replace(/\s/g,'-')}-OOO-${r.start}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
 function openNotifyEmail(){
   if(!pendingNotify) return;
   const r=pendingNotify, cfg=TYPE_CFG[r.type], days=dayCount(r.start,r.end);
   const all=TEAM.map(t=>t.email).join(',');
-  const sub=encodeURIComponent(`[OOO] ${r.userName} – ${cfg.label} ${fmtRange(r.start,r.end)}`);
-  const body=encodeURIComponent(`Hi team,\n\n${r.userName} will be out of office:\n\nType: ${cfg.label}${r.half&&r.half!=='full'?' ('+r.half+')':''}\nDates: ${fmtRange(r.start,r.end)}\nDuration: ${days} day${days!==1?'s':''}\n\nPlease plan accordingly.\n\n— spARK Labs availability portal`);
-  window.location.href=`mailto:${all}?subject=${sub}&body=${body}`;
-  closeNotify();
+  const half=r.half&&r.half!=='full'?' ('+r.half+')':'';
+  
+  // Step 1: download the calendar invite
+  downloadInvite(r);
+  
+  // Step 2: open the email with instructions to attach it
+  const sub=encodeURIComponent(`[OOO] ${r.userName} - Out of Office ${fmtRange(r.start,r.end)}`);
+  const body=encodeURIComponent(`Hi team,\n\n${r.userName} will be out of office:\n\nType: ${cfg.label}${half}\nDates: ${fmtRange(r.start,r.end)}\nDuration: ${days} day${days!==1?'s':''}\n\nA calendar invite has been downloaded to your device. Please attach it to this email before sending (drag the .ics file into the message) so it lands on everyone's calendar.\n\nPlease plan accordingly.\n\n— spARK Labs availability portal`);
+  setTimeout(()=>{ window.location.href=`mailto:${all}?subject=${sub}&body=${body}`; }, 600);
+  
+  // Step 3: show confirmation
+  document.getElementById('notifyMsg').innerHTML='✅ Calendar invite downloaded! Attach it to the email that just opened, then send. Everyone who accepts will get it on their calendar.';
 }
 
 // ═══════════════════════════════════════════════════
