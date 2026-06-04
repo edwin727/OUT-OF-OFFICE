@@ -1113,16 +1113,13 @@ function buildOOOInvite(r){
   const endExcl=toStr(addDays(fromStr(r.end),1));
   const now=new Date();
   const stamp=now.getUTCFullYear()+pad(now.getUTCMonth()+1)+pad(now.getUTCDate())+'T'+pad(now.getUTCHours())+pad(now.getUTCMinutes())+pad(now.getUTCSeconds())+'Z';
-  const organizer=TEAM.find(t=>t.id===r.userId);
-  const orgEmail=organizer?organizer.email:'noreply@sp-ark-labs.com';
-  // Attendees = whole team
-  const attendees=TEAM.map(t=>`ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE;CN=${t.name}:mailto:${t.email}`).join('\r\n');
   const half=r.half&&r.half!=='full'?' ('+r.half+')':'';
+  // Clean PUBLISH event — imports reliably into Outlook/Google/Apple
   const ics=[
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
     'PRODID:-//spARK Labs//OOO Portal//EN',
-    'METHOD:REQUEST',
+    'METHOD:PUBLISH',
     'CALSCALE:GREGORIAN',
     'BEGIN:VEVENT',
     'UID:'+r.id+'@sparklabs-ooo',
@@ -1131,8 +1128,6 @@ function buildOOOInvite(r){
     'DTEND;VALUE=DATE:'+fmtICS(endExcl),
     'SUMMARY:'+r.userName+' - Out of Office',
     'DESCRIPTION:'+r.userName+' is out of office ('+cfg.label+half+') from '+fmtRange(r.start,r.end)+'. Logged via the spARK Labs availability portal.',
-    'ORGANIZER;CN='+r.userName+':mailto:'+orgEmail,
-    attendees,
     'STATUS:CONFIRMED',
     'TRANSP:OPAQUE',
     'X-MICROSOFT-CDO-BUSYSTATUS:OOF',
@@ -1141,7 +1136,7 @@ function buildOOOInvite(r){
     'BEGIN:VALARM',
     'TRIGGER:-P1D',
     'ACTION:DISPLAY',
-    'DESCRIPTION:Reminder',
+    'DESCRIPTION:Reminder - '+r.userName+' out of office tomorrow',
     'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR'
