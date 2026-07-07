@@ -479,6 +479,7 @@ tr:hover td{background:#fafafa;}
 // ═══════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════
+const TEAM_VERSION = 3; // bump this number whenever you change DEFAULT_TEAM in the code
 const DEFAULT_TEAM = [
   {id:'edwin',    name:'Edwin',     email:'deeke@sp-ark-labs.com',      pass:'edwin123',    role:'admin'},
   {id:'cassandra',name:'Cassandra', email:'bernardc@sp-ark-labs.com',   pass:'cassandra123',role:'employee'},
@@ -585,15 +586,35 @@ async function saveAll() {
 }
 
 async function loadAll() {
-  // Load team — always from DEFAULT + any local admin changes
+  // ── Load TEAM from Firebase (shared across everyone) ──
   try {
-    const saved = localStorage.getItem('sl_team_local');
-    TEAM = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_TEAM));
+    const [tResp, vResp] = await Promise.all([
+      fetch(FB_URL + '/team.json', { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } }),
+      fetch(FB_URL + '/teamVersion.json', { cache: 'no-store', headers: { 'Cache-Control': 'no-cache' } })
+    ]);
+    const tData = tResp.ok ? await tResp.json() : null;
+    const fbVersion = vResp.ok ? await vResp.json() : null;
+
+    // If code version is newer (or no team stored), push the code's DEFAULT_TEAM to Firebase
+    if (!tData || !Array.isArray(tData) || tData.length === 0 || (fbVersion === null || fbVersion < TEAM_VERSION)) {
+      TEAM = JSON.parse(JSON.stringify(DEFAULT_TEAM));
+      await fetch(FB_URL + '/team.json', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(TEAM)
+      });
+      await fetch(FB_URL + '/teamVersion.json', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(TEAM_VERSION)
+      });
+    } else {
+      TEAM = tData.filter(Boolean);
+    }
   } catch(e) {
     TEAM = JSON.parse(JSON.stringify(DEFAULT_TEAM));
+    console.warn('Team load failed, using default:', e.message);
   }
 
-  // Load shared requests from Firebase
+  // ── Load shared requests from Firebase ──
   try {
     const resp = await fetch(FB_URL + '/requests.json', {
       method: 'GET',
@@ -602,16 +623,15 @@ async function loadAll() {
     });
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const data = await resp.json();
-    // Firebase returns null when empty, or an array/object
     if (!data) {
       requests = [];
     } else if (Array.isArray(data)) {
-      requests = data.filter(Boolean); // remove nulls
+      requests = data.filter(Boolean);
     } else {
       requests = Object.values(data);
     }
+    try { localStorage.setItem('sl_backup', JSON.stringify(requests)); } catch(e2) {}
   } catch(e) {
-    // Fallback to local backup
     try {
       const backup = localStorage.getItem('sl_backup');
       requests = backup ? JSON.parse(backup) : [];
@@ -620,9 +640,21 @@ async function loadAll() {
   }
 }
 
-// Save team changes locally (add/remove members stays local)
-function saveTeamLocal() {
-  try { localStorage.setItem('sl_team_local', JSON.stringify(TEAM)); } catch(e) {}
+// Save team to Firebase (shared across everyone)
+async function saveTeamLocal() {
+  try {
+    await fetch(FB_URL + '/team.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(TEAM)
+    });
+    // Bump stored version so this team persists as the current one
+    await fetch(FB_URL + '/teamVersion.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(TEAM_VERSION + 1000 + Date.now() % 1000)
+    });
+  } catch(e) { console.warn('Team save failed:', e.message); }
 }
 
 // Real-time listener — Firebase Server-Sent Events
@@ -1378,7 +1410,7 @@ function openMemberModal(){
   document.getElementById('memberModalBg').classList.add('open');
 }
 function closeMemberModal(){ document.getElementById('memberModalBg').classList.remove('open'); }
-function saveMember(){
+async function saveMember(){
   const name =document.getElementById('mName').value.trim();
   const email=document.getElementById('mEmail').value.trim();
   const pass =document.getElementById('mPass').value.trim();
@@ -1388,9 +1420,10 @@ function saveMember(){
   if(TEAM.find(t=>t.email.toLowerCase()===email.toLowerCase())){ errEl.textContent='That email already exists.'; errEl.style.display='block'; return; }
   const id=name.toLowerCase().replace(/\s+/g,'')+Date.now();
   TEAM.push({id,name,email,pass,role});
-  saveTeamLocal();
+  await saveTeamLocal();
   closeMemberModal();
   renderAdminMembers();
+  renderDashboard();
 }
 async function removeMember(id){
   if(!confirm('Remove this team member?')) return;
