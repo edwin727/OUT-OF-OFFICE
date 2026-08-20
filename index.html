@@ -74,6 +74,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .whos-card.in{background:#f0fdf4;border:1.5px solid #bbf7d0;}
 .whos-card.out{background:#fff5f5;border:1.5px solid #fecaca;}
 .whos-card.halfday{background:#fff8f0;border:1.5px solid #fed7aa;}
+.whos-card.remote{background:#e0f2f1;border:1.5px solid #80cbc4;}
 .whos-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .dot-in{background:var(--green);}.dot-out{background:var(--red);}.dot-half{background:var(--amber);}
 .whos-name{font-size:12px;font-weight:600;}
@@ -119,6 +120,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ev-sick{background:#fefbe8;color:#7a5500;}
 .ev-personal{background:#e8f4ff;color:#0c447c;}
 .ev-conference{background:#f0effe;color:#3c3489;}
+.ev-remote{background:#e0f2f1;color:#00695c;}
 .ev-holiday{background:#fffbeb;color:#92400e;font-style:italic;}
 
 /* LIST */
@@ -373,6 +375,7 @@ tr:hover td{background:#fafafa;}
           <button class="fp" onclick="setFilter('sick',this)">Sick</button>
           <button class="fp" onclick="setFilter('personal',this)">Personal</button>
           <button class="fp" onclick="setFilter('conference',this)">Event</button>
+          <button class="fp" onclick="setFilter('remote',this)">Remote</button>
         </div>
         <div class="abs-list" id="upcomingList"></div>
       </div>
@@ -437,6 +440,7 @@ tr:hover td{background:#fafafa;}
         <option value="sick">🤒 Sick leave</option>
         <option value="personal">💙 Personal</option>
         <option value="conference">🎤 Conference / Event</option>
+        <option value="remote">💻 Working Remotely</option>
       </select>
     </div>
     <div class="frow"><label>Start date</label><input type="date" id="mStart" onchange="checkOverlapLive()"/></div>
@@ -496,6 +500,7 @@ const TYPE_CFG = {
   sick:       {label:'Sick leave', bg:'#fefbe8',tc:'#7a5500',stripe:'#F5C842',ev:'ev-sick'},
   personal:   {label:'Personal',   bg:'#e8f4ff',tc:'#0c447c',stripe:'#378ADD',ev:'ev-personal'},
   conference: {label:'Conference', bg:'#f0effe',tc:'#3c3489',stripe:'#7F77DD',ev:'ev-conference'},
+  remote:     {label:'Working Remotely', bg:'#e0f2f1',tc:'#00695c',stripe:'#26A69A',ev:'ev-remote'},
 };
 
 const AV_COLORS = [
@@ -814,7 +819,7 @@ function renderDashboard(){
 
 function renderStats(){
   const ts=toStr(TODAY), we=toStr(addDays(TODAY,7));
-  const ot=requests.filter(r=>r.start<=ts&&r.end>=ts).length;
+  const ot=requests.filter(r=>r.start<=ts&&r.end>=ts&&r.type!=='remote').length;
   const ow=requests.filter(r=>r.start<=we&&r.end>=ts).length;
   const up=requests.filter(r=>r.start>ts).length;
   document.getElementById('statsRow').innerHTML=[
@@ -829,12 +834,17 @@ function renderWhosIn(){
   const ts=toStr(TODAY);
   document.getElementById('whosGrid').innerHTML=TEAM.map((u,i)=>{
     const req=requests.find(r=>r.userId===u.id&&r.start<=ts&&r.end>=ts);
-    const isOut=!!req;
-    const isHalf=req&&req.half&&req.half!=='full';
     const [bg,tc]=avc(i);
-    let cls=isHalf?'halfday':isOut?'out':'in';
-    let dotCls=isHalf?'dot-half':isOut?'dot-out':'dot-in';
-    let status=isHalf?`Half day (${req.half})`:isOut?`Out — ${TYPE_CFG[req.type].label}`:'In office';
+    let cls, status;
+    if(!req){
+      cls='in'; status='In office';
+    } else if(req.type==='remote'){
+      cls='remote'; status='\uD83D\uDCBB Working remotely';
+    } else if(req.half&&req.half!=='full'){
+      cls='halfday'; status=`Half day (${req.half})`;
+    } else {
+      cls='out'; status=`Out \u2014 ${TYPE_CFG[req.type].label}`;
+    }
     return `<div class="whos-card ${cls}">
       <div style="width:28px;height:28px;border-radius:50%;background:${bg};color:${tc};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0">${ini(u.name)}</div>
       <div><div class="whos-name">${u.name}</div><div class="whos-status">${status}</div></div>
@@ -849,7 +859,7 @@ function renderOverlapWarnings(){
   let d=new Date(TODAY);
   for(let i=0;i<30;i++){
     const ds=toStr(d);
-    const out=requests.filter(r=>r.start<=ds&&r.end>=ds);
+    const out=requests.filter(r=>r.start<=ds&&r.end>=ds&&r.type!=='remote');
     if(out.length>=3){
       warnings.push(`${fromStr(ds).toLocaleDateString('en-US',{month:'short',day:'numeric'})}: ${out.map(r=>r.userName).join(', ')} all out (${out.length} people)`);
     }
@@ -983,7 +993,7 @@ function checkOverlapLive(){
   let d=new Date(fromStr(s)), maxOut=0, maxDate='', maxNames=[];
   while(toStr(d)<=e){
     const ds=toStr(d);
-    const out=requests.filter(r=>r.userId!==currentUser.id&&r.start<=ds&&r.end>=ds);
+    const out=requests.filter(r=>r.userId!==currentUser.id&&r.start<=ds&&r.end>=ds&&r.type!=='remote');
     if(out.length>maxOut){maxOut=out.length;maxDate=ds;maxNames=out.map(r=>r.userName);}
     d=addDays(d,1);
   }
@@ -1158,11 +1168,11 @@ function buildOOOInvite(r){
     'DTSTAMP:'+stamp,
     'DTSTART;VALUE=DATE:'+fmtICS(r.start),
     'DTEND;VALUE=DATE:'+fmtICS(endExcl),
-    'SUMMARY:'+r.userName+' - Out of Office',
+    'SUMMARY:'+r.userName+(r.type==='remote'?' - Working Remotely':' - Out of Office'),
     'DESCRIPTION:'+r.userName+' is out of office ('+cfg.label+half+') from '+fmtRange(r.start,r.end)+'. Logged via the spARK Labs availability portal.',
     'STATUS:CONFIRMED',
-    'TRANSP:OPAQUE',
-    'X-MICROSOFT-CDO-BUSYSTATUS:OOF',
+    (r.type==='remote'?'TRANSP:TRANSPARENT':'TRANSP:OPAQUE'),
+    'X-MICROSOFT-CDO-BUSYSTATUS:'+(r.type==='remote'?'WORKINGELSEWHERE':'OOF'),
     'X-MICROSOFT-CDO-ALLDAYEVENT:TRUE',
     'SEQUENCE:0',
     'BEGIN:VALARM',
